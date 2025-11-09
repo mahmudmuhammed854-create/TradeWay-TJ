@@ -3,242 +3,203 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>TradeWay TJ — Дӯкон</title>
+<title>TradeWay TJ</title>
 <style>
-  :root{--bg:#0f1115;--panel:#151821;--card:#191d27;--border:#232836;--text:#e8ecf1;--muted:#9aa0b4;--accent:#4cc9f0}
-  *{box-sizing:border-box} body{margin:0;background:var(--bg);color:var(--text);font-family:system-ui}
-  header{position:sticky;top:0;z-index:5;border-bottom:1px solid var(--border);background:linear-gradient(180deg,var(--bg),rgba(15,17,21,.85));backdrop-filter:blur(6px)}
-  .wrap{max-width:1000px;margin:0 auto;padding:12px 16px}
-  .bar{display:flex;gap:12px;align-items:center;justify-content:space-between}
-  h1{margin:0;font-size:18px}
-  .search{display:flex;gap:8px;flex:1;max-width:460px;margin:0 12px}
-  .input{background:var(--panel);border:1px solid var(--border);border-radius:12px;padding:10px 12px;color:var(--text);width:100%}
-  .btn{border:1px solid var(--border);background:var(--panel);color:var(--text);padding:10px 14px;border-radius:12px;cursor:pointer;transition:.2s}
-  .btn:hover{background:var(--card)}
-  .btn.acc{background:linear-gradient(135deg,#38bdf8,#22d3ee);border:none;color:#081018}
-  main .wrap{display:grid;grid-template-columns:230px 1fr;gap:16px}
-  .sidebar{align-self:start;position:sticky;top:64px;background:var(--panel);border:1px solid var(--border);border-radius:16px;padding:12px}
-  .cat{width:100%;text-align:left;margin-bottom:8px;background:var(--card);border:1px solid var(--border);border-radius:12px;padding:10px}
-  .cat.active{outline:2px solid var(--accent);border-color:transparent}
-  .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:12px}
-  .card{background:var(--card);border:1px solid var(--border);border-radius:16px;overflow:hidden;display:flex;flex-direction:column}
-  .thumb{aspect-ratio:16/11;background:#0b0d12;display:flex;align-items:center;justify-content:center;color:#888}
-  .thumb img{width:100%;height:100%;object-fit:cover}
-  .body{padding:12px;display:flex;flex-direction:column;gap:8px}
-  .row{display:flex;gap:8px;align-items:center}
-  .row.push{justify-content:space-between;margin-top:auto}
-  .price{font-weight:700}
-  .drawer{position:fixed;inset:0;background:rgba(0,0,0,.45);display:none;z-index:50}
-  .drawer.show{display:block}
-  .panel{position:absolute;right:0;top:0;height:100%;width:420px;max-width:100%;background:var(--panel);border-left:1px solid var(--border);padding:16px;overflow:auto}
-  .muted{color:var(--muted);font-size:12px}
-  .close-x{position:absolute;top:8px;right:12px;font-size:22px;color:var(--muted);cursor:pointer}
-  .close-x:hover{color:var(--accent)}
+body { font-family: Arial, sans-serif; margin: 20px; background: #f9f9f9; }
+h1 { text-align: center; color: #333; }
+.category, .cart, .admin { background: #fff; padding: 15px; border-radius: 10px; box-shadow: 0 0 5px #ccc; margin-bottom: 20px; }
+button { background: #007bff; color: white; border: none; padding: 6px 12px; border-radius: 5px; cursor: pointer; }
+button:hover { background: #0056b3; }
+.hidden { display: none; }
+input[type="number"] { width: 70px; text-align: center; }
 </style>
 </head>
 <body>
-<header>
-  <div class="wrap bar">
-    <h1>TradeWay TJ — Дӯкон</h1>
-    <div class="search">
-      <input id="q" class="input" placeholder="Ҷустуҷӯ…">
-      <button class="btn" id="clearQ">Тоза</button>
-    </div>
-    <div class="row" style="gap:8px">
-      <button class="btn" id="openCart">🛒 Сабад</button>
-    </div>
-  </div>
-</header>
 
-<main>
-  <div class="wrap">
-    <aside class="sidebar" id="cats"></aside>
-    <section>
-      <div class="grid" id="grid"></div>
-    </section>
-  </div>
-</main>
+<h1>🛍 TradeWay TJ</h1>
 
-<!-- КОРЗИНА -->
-<div class="drawer" id="drawer">
-  <div class="panel">
-    <span class="close-x" id="closeX">✖</span>
-    <div class="row" style="justify-content:space-between;align-items:center;margin-bottom:8px">
-      <button class="btn" id="backToShop">← Ба меню</button>
-    </div>
+<div id="login">
+  <h3>🔐 Вход администратора</h3>
+  <input type="password" id="adminPass" placeholder="Пароль"><br><br>
+  <button onclick="login()">Войти</button>
+</div>
 
-    <h3 style="margin:8px 0 12px">🧾 Сабад</h3>
-    <div id="cartList"></div>
+<div id="adminPanel" class="admin hidden">
+  <h3>⚙️ Панель администратора</h3>
+  <input type="text" id="newName" placeholder="Название товара">
+  <input type="number" id="newPrice" placeholder="Цена">
+  <button onclick="addProduct()">➕ Добавить</button>
+  <h4>📋 Товары:</h4>
+  <div id="productList"></div>
+  <button onclick="logout()">🚪 Выйти</button>
+</div>
 
-    <div class="row" style="justify-content:space-between;margin-top:12px">
-      <b>Ҷамъ:</b> <span id="totalPrice">0 сомонӣ</span>
-    </div>
+<div id="shop" class="hidden">
+  <div id="menu"></div>
+  <button onclick="openCart()">🛒 Корзина</button>
+</div>
 
-    <h4 style="margin-top:16px">Маълумоти муштарӣ</h4>
-    <div class="row" style="flex-direction:column;align-items:stretch;gap:8px">
-      <input id="custName" class="input" placeholder="Ном">
-      <input id="custPhone" class="input" placeholder="Телефон">
-      <textarea id="custAddr" class="input" rows="3" placeholder="Суроға"></textarea>
-      <button class="btn acc" id="placeOrder">📦 Тасдиқи фармоиш</button>
-      <div class="muted">Пас аз тасдиқ фармоиш ба Google Таблица автоматӣ сабт мешавад.</div>
-      <div id="status" class="muted"></div>
-    </div>
-  </div>
+<div id="cart" class="cart hidden">
+  <h3>🛒 Корзина</h3>
+  <div id="cart-items"></div>
+  <p><b>Итого:</b> <span id="total">0</span> сомони</p>
+  <input type="text" id="name" placeholder="Имя"><br><br>
+  <input type="text" id="phone" placeholder="Телефон"><br><br>
+  <input type="text" id="address" placeholder="Адрес"><br><br>
+  <button onclick="sendOrder()">📦 Тасдиқи фармоиш</button>
+  <button onclick="closeCart()">⬅️ Назад</button>
 </div>
 
 <script>
-// ========= НАСТРОЙКИ =========
-const CURRENCY = "сомонӣ";
-const GAS_URL = "https://script.google.com/macros/s/AKfycbxEeYBEWhVm8yrru9A96C21ZOxZMfsgag0JBNDZImUuW1DPSYj4iJrZ9Js6D3F8ebT8/exec";
+const GAS_URL = "https://script.google.com/macros/s/AKfycbydkrOnh6EGUB89wrf3xo8y1hg_6nDJyOAwCCl4yFmk7ZtQFbBbv32C9APuSfJoyJGr/exec";
+let cart = [];
+let password = "";
 
-const categories = [
-  {id:"electronic", name:"📱 Электроника"},
-  {id:"office",     name:"✏️ Канселярия"},
-  {id:"clothes",    name:"👕 Либос"},
-  {id:"shoes",      name:"👟 Пойафзол"},
-  {id:"bed",        name:"🛏 Постелное белъе"},
-  {id:"perfume",    name:"🌸 Атр"}
-];
-
-const products = [
-  {id:101, cat:"electronic", name:"Телефони A12", price:2499, img:"https://picsum.photos/seed/phone/480/330"},
-  {id:102, cat:"electronic", name:"Гӯшмонаки Pro ANC", price:799, img:"https://picsum.photos/seed/headset/480/330"},
-  {id:201, cat:"office", name:"Дафтар 96 саҳифа", price:12, img:"https://picsum.photos/seed/notebook/480/330"},
-  {id:202, cat:"office", name:"Қалам гелӣ", price:6, img:"https://picsum.photos/seed/pen/480/330"},
-  {id:301, cat:"clothes", name:"Футболка TradeWay", price:149, img:"https://picsum.photos/seed/shirt/480/330"},
-  {id:302, cat:"clothes", name:"Ҷомаи гарм", price:379, img:"https://picsum.photos/seed/hoodie/480/330"},
-  {id:401, cat:"shoes", name:"Кроссовкаи сафед", price:499, img:"https://picsum.photos/seed/shoes/480/330"},
-  {id:501, cat:"bed", name:"Болишти ортопедӣ", price:219, img:"https://picsum.photos/seed/pillow/480/330"},
-  {id:502, cat:"bed", name:"Пӯсти нарм", price:179, img:"https://picsum.photos/seed/plaid/480/330"},
-  {id:601, cat:"perfume", name:"Атри Classic 50мл", price:589, img:"https://picsum.photos/seed/perfume/480/330"}
-];
-
-const state = { activeCat: "all", query: "", cart: [] };
-const $ = s => document.querySelector(s);
-const fmt = n => `${Number(n||0).toLocaleString('ru-RU')} ${CURRENCY}`;
-const findP = id => products.find(p=>p.id===id);
-
-function renderCats() {
-  const catsEl = $("#cats");
-  catsEl.innerHTML = "";
-  const all = document.createElement("button");
-  all.className = "cat" + (state.activeCat==="all"?" active":"");
-  all.textContent = "📦 Ҳама маҳсулот";
-  all.onclick = ()=>{ state.activeCat="all"; renderGrid(); };
-  catsEl.appendChild(all);
-
-  categories.forEach(c=>{
-    const b = document.createElement("button");
-    b.className = "cat" + (state.activeCat===c.id?" active":"");
-    b.textContent = c.name;
-    b.onclick = ()=>{ state.activeCat=c.id; renderGrid(); };
-    catsEl.appendChild(b);
+// -------------------- ЗАГРУЗКА ТОВАРОВ --------------------
+async function loadProducts() {
+  const res = await fetch(GAS_URL);
+  const data = await res.json();
+  const menu = document.getElementById("menu");
+  menu.innerHTML = "";
+  data.forEach(p => {
+    menu.innerHTML += `<div class='product'><b>${p.name}</b> — ${p.price} сом <button onclick="addToCart('${p.name}', ${p.price})">➕</button></div>`;
   });
 }
 
-function renderGrid(){
-  let list = products;
-  if(state.activeCat!=="all") list = list.filter(p=>p.cat===state.activeCat);
-  if(state.query) list = list.filter(p=>p.name.toLowerCase().includes(state.query.toLowerCase()));
-  const gridEl = $("#grid");
-  gridEl.innerHTML = list.map(p=>{
-    const qty = state.cart.find(i=>i.id===p.id)?.qty || 0;
-    return `
-      <div class="card">
-        <div class="thumb">${p.img?`<img src="${p.img}" alt="">`:"акс нест"}</div>
-        <div class="body">
-          <div><b>${p.name}</b></div>
-          <div class="row"><span class="price">${fmt(p.price)}</span></div>
-          <div class="row push">
-            <div class="row" style="gap:6px">
-              <button class="btn" onclick="dec(${p.id})">−</button>
-              <div>${qty}</div>
-              <button class="btn" onclick="inc(${p.id})">+</button>
-            </div>
-            <button class="btn" onclick="add(${p.id})">Ба сабад</button>
-          </div>
-        </div>
-      </div>`;
-  }).join("") || `<div class="muted">Маҳсулот ёфт нашуд.</div>`;
+// -------------------- ДОБАВЛЕНИЕ --------------------
+async function addProduct() {
+  const name = document.getElementById("newName").value.trim();
+  const price = document.getElementById("newPrice").value;
+  if (!name || !price) return alert("Введите название и цену");
+
+  await fetch(GAS_URL, {
+    method: "POST",
+    body: JSON.stringify({ type: "addProduct", name, price, password })
+  });
+  alert("✅ Товар добавлен!");
+  document.getElementById("newName").value = "";
+  document.getElementById("newPrice").value = "";
+  showProducts();
 }
 
-function inc(id){ const r=state.cart.find(i=>i.id===id); if(r) r.qty++; else state.cart.push({id,qty:1}); if(drawerOpen()) renderCart(); renderGrid(); }
-function dec(id){ const r=state.cart.find(i=>i.id===id); if(!r) return; r.qty--; if(r.qty<=0) state.cart=state.cart.filter(i=>i.id!==id); if(drawerOpen()) renderCart(); renderGrid(); }
-function add(id){ inc(id); }
-function removeItem(id){ state.cart=state.cart.filter(i=>i.id!==id); renderCart(); renderGrid(); }
-
-function totals(){let sum=0; state.cart.forEach(i=>{ const p=findP(i.id); if(p) sum+=p.price*i.qty; }); return {sum};}
-
-const drawerEl = $("#drawer");
-function drawerOpen(){ return drawerEl.classList.contains("show"); }
-$("#openCart").onclick = ()=>{ drawerEl.classList.add("show"); document.body.style.overflow="hidden"; renderCart(); };
-function closeDrawer(){ drawerEl.classList.remove("show"); document.body.style.overflow=""; }
-$("#closeX").onclick = closeDrawer;
-$("#backToShop").onclick = closeDrawer;
-
-function renderCart(){
-  const list = $("#cartList"); const t = totals();
-  if(state.cart.length===0){ list.innerHTML = `<div class="muted">Сабад холӣ аст.</div>`; $("#totalPrice").textContent = fmt(0); return; }
-  list.innerHTML = state.cart.map(i=>{
-    const p=findP(i.id); const sub=(p?.price||0)*i.qty;
-    return `
-      <div class="row" style="justify-content:space-between;border-bottom:1px dashed var(--border);padding:8px 0">
-        <div style="flex:1">
-          <div><b>${p?.name||"нест"}</b></div>
-          <div class="row" style="gap:6px;margin-top:6px">
-            <button class="btn" onclick="dec(${i.id})">−</button>
-            <div>${i.qty}</div>
-            <button class="btn" onclick="inc(${i.id})">+</button>
-            <button class="btn" onclick="removeItem(${i.id})">Нест кардан</button>
-          </div>
-        </div>
-        <div class="price">${fmt(sub)}</div>
+// -------------------- ПОКАЗ СПИСКА --------------------
+async function showProducts() {
+  const res = await fetch(GAS_URL);
+  const data = await res.json();
+  const list = document.getElementById("productList");
+  list.innerHTML = "";
+  data.forEach(p => {
+    list.innerHTML += `
+      <div>
+        <input type="text" value="${p.name}" disabled>
+        <input type="number" value="${p.price}" id="price-${p.name}">
+        <button onclick="updatePrice('${p.name}')">💾</button>
+        <button onclick="deleteProduct('${p.name}')">❌</button>
       </div>`;
-  }).join("");
-  $("#totalPrice").textContent = fmt(t.sum);
+  });
 }
 
-// === ПОИСК ===
-$("#q").addEventListener("input", e=>{
-  state.query = e.target.value.trim();
-  renderGrid();
-});
-$("#clearQ").onclick = ()=>{
-  $("#q").value = "";
-  state.query = "";
-  renderGrid();
-};
+// -------------------- УДАЛЕНИЕ --------------------
+async function deleteProduct(name) {
+  if (!confirm(`Удалить ${name}?`)) return;
+  await fetch(GAS_URL, {
+    method: "POST",
+    body: JSON.stringify({ type: "deleteProduct", name, password })
+  });
+  showProducts();
+}
 
-// === ОФОРМЛЕНИЕ ЗАКАЗА ===
-$("#placeOrder").onclick = async ()=>{
-  const status = $("#status");
-  const order = {
-    currency: CURRENCY,
-    customer: {
-      name: $("#custName").value.trim(),
-      phone: $("#custPhone").value.trim(),
-      address: $("#custAddr").value.trim(),
-    },
-    items: state.cart.map(i=>{
-      const p=findP(i.id);
-      return { id:i.id, name:p?.name||"", qty:i.qty, price:p?.price||0, subtotal:(p?.price||0)*i.qty }
-    }),
-    total: totals().sum
-  };
-  if(!order.customer.name || !order.customer.phone){ status.textContent="❗Лутфан ном ва телефонро ворид кунед."; return; }
-  if(order.items.length===0){ status.textContent="❗Сабад холӣ аст."; return; }
-  status.textContent="⏳ Ирсол ба Google Sheets...";
-  try{
-    const res=await fetch(GAS_URL,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify(order)});
-    const data=await res.json();
-    if(data.ok){ status.textContent="✅ Фармоиш сабт шуд!"; state.cart=[]; renderCart(); renderGrid();}
-    else{ status.textContent="❌ Хатогӣ: "+(data.error||""); }
-  }catch(err){ status.textContent="❌ Хатогӣ пайвастшавӣ: "+err.message; }
-};
+// -------------------- ОБНОВЛЕНИЕ ЦЕНЫ --------------------
+async function updatePrice(name) {
+  const newPrice = document.getElementById(`price-${name}`).value;
+  await fetch(GAS_URL, {
+    method: "POST",
+    body: JSON.stringify({ type: "deleteProduct", name, password })
+  });
+  await fetch(GAS_URL, {
+    method: "POST",
+    body: JSON.stringify({ type: "addProduct", name, price: newPrice, password })
+  });
+  alert("💾 Цена обновлена!");
+  showProducts();
+}
 
-renderCats();
-renderGrid();
-window.inc=inc; window.dec=dec; window.add=add; window.removeItem=removeItem;
+// -------------------- АДМИН --------------------
+function login() {
+  const pass = document.getElementById("adminPass").value;
+  if (pass === "admin123") {
+    password = pass;
+    document.getElementById("login").classList.add("hidden");
+    document.getElementById("adminPanel").classList.remove("hidden");
+    showProducts();
+  } else {
+    alert("❌ Неверный пароль!");
+  }
+}
+
+function logout() {
+  password = "";
+  document.getElementById("adminPanel").classList.add("hidden");
+  document.getElementById("login").classList.remove("hidden");
+}
+
+// -------------------- КОРЗИНА --------------------
+function openCart() {
+  document.getElementById("cart").classList.remove("hidden");
+  document.getElementById("shop").classList.add("hidden");
+  updateCart();
+}
+function closeCart() {
+  document.getElementById("cart").classList.add("hidden");
+  document.getElementById("shop").classList.remove("hidden");
+}
+function addToCart(name, price) {
+  cart.push({ name, price });
+  alert(name + " добавлен в корзину!");
+}
+function updateCart() {
+  const items = document.getElementById("cart-items");
+  items.innerHTML = "";
+  let total = 0;
+  cart.forEach((item, i) => {
+    total += item.price;
+    items.innerHTML += `<div>${item.name} — ${item.price} сом <button onclick="removeItem(${i})">❌</button></div>`;
+  });
+  document.getElementById("total").innerText = total;
+}
+function removeItem(i) {
+  cart.splice(i, 1);
+  updateCart();
+}
+
+// -------------------- ОТПРАВКА ЗАКАЗА --------------------
+async function sendOrder() {
+  const name = document.getElementById("name").value;
+  const phone = document.getElementById("phone").value;
+  const address = document.getElementById("address").value;
+  const total = document.getElementById("total").innerText;
+
+  if (!name || !phone || cart.length === 0) return alert("Заполните все поля");
+
+  await fetch(GAS_URL, {
+    method: "POST",
+    mode: "no-cors",
+    body: JSON.stringify({
+      type: "order",
+      customer: { name, phone, address },
+      items: cart,
+      total,
+      currency: "сомони",
+      ua: "TradeWayTJ"
+    })
+  });
+
+  alert("✅ Заказ отправлен!");
+  cart = [];
+  closeCart();
+}
+
+loadProducts();
 </script>
 </body>
 </html>
