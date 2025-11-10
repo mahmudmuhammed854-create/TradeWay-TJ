@@ -3,200 +3,126 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>TradeWay TJ</title>
+<title>TradeWay TJ — Магазин</title>
 <style>
-body { font-family: Arial, sans-serif; margin: 20px; background: #f9f9f9; }
+body { font-family: Arial, sans-serif; margin: 20px; background: #f8f9fa; }
 h1 { text-align: center; color: #333; }
-.category, .cart, .admin { background: #fff; padding: 15px; border-radius: 10px; box-shadow: 0 0 5px #ccc; margin-bottom: 20px; }
+.product { background: #fff; padding: 10px; margin-bottom: 10px; border-radius: 10px; box-shadow: 0 0 5px rgba(0,0,0,0.1); }
 button { background: #007bff; color: white; border: none; padding: 6px 12px; border-radius: 5px; cursor: pointer; }
 button:hover { background: #0056b3; }
 .hidden { display: none; }
-input[type="number"] { width: 70px; text-align: center; }
+.cart { background: #fff; padding: 15px; border-radius: 10px; box-shadow: 0 0 6px rgba(0,0,0,0.2); }
 </style>
 </head>
 <body>
 
 <h1>🛍 TradeWay TJ</h1>
+<div id="shop"></div>
 
-<div id="login">
-  <h3>🔐 Вход администратора</h3>
-  <input type="password" id="adminPass" placeholder="Пароль"><br><br>
-  <button onclick="login()">Войти</button>
-</div>
-
-<div id="adminPanel" class="admin hidden">
-  <h3>⚙️ Панель администратора</h3>
-  <input type="text" id="newName" placeholder="Название товара">
-  <input type="number" id="newPrice" placeholder="Цена">
-  <button onclick="addProduct()">➕ Добавить</button>
-  <h4>📋 Товары:</h4>
-  <div id="productList"></div>
-  <button onclick="logout()">🚪 Выйти</button>
-</div>
-
-<div id="shop" class="hidden">
-  <div id="menu"></div>
-  <button onclick="openCart()">🛒 Корзина</button>
-</div>
+<button onclick="openCart()">🛒 Корзина</button>
 
 <div id="cart" class="cart hidden">
   <h3>🛒 Корзина</h3>
   <div id="cart-items"></div>
-  <p><b>Итого:</b> <span id="total">0</span> сомони</p>
-  <input type="text" id="name" placeholder="Имя"><br><br>
+  <p><b>Итого:</b> <span id="total">0</span> сомонӣ</p>
+
+  <input type="text" id="name" placeholder="Ном"><br><br>
   <input type="text" id="phone" placeholder="Телефон"><br><br>
-  <input type="text" id="address" placeholder="Адрес"><br><br>
-  <button onclick="sendOrder()">📦 Тасдиқи фармоиш</button>
-  <button onclick="closeCart()">⬅️ Назад</button>
+  <input type="text" id="address" placeholder="Суроға"><br><br>
+
+  <button onclick="sendOrder()">📦 Фармоиш</button>
+  <button onclick="closeCart()">⬅️ Бозгашт</button>
 </div>
 
 <script>
 const GAS_URL = "https://script.google.com/macros/s/AKfycbydkrOnh6EGUB89wrf3xo8y1hg_6nDJyOAwCCl4yFmk7ZtQFbBbv32C9APuSfJoyJGr/exec";
 let cart = [];
-let password = "";
 
-// -------------------- ЗАГРУЗКА ТОВАРОВ --------------------
 async function loadProducts() {
-  const res = await fetch(GAS_URL);
-  const data = await res.json();
-  const menu = document.getElementById("menu");
-  menu.innerHTML = "";
-  data.forEach(p => {
-    menu.innerHTML += `<div class='product'><b>${p.name}</b> — ${p.price} сом <button onclick="addToCart('${p.name}', ${p.price})">➕</button></div>`;
-  });
-}
+  try {
+    const res = await fetch(GAS_URL, { headers: { "Accept": "application/json" } });
+    let data;
+    try { data = await res.json(); } 
+    catch { data = JSON.parse(await res.text()); }
 
-// -------------------- ДОБАВЛЕНИЕ --------------------
-async function addProduct() {
-  const name = document.getElementById("newName").value.trim();
-  const price = document.getElementById("newPrice").value;
-  if (!name || !price) return alert("Введите название и цену");
-
-  await fetch(GAS_URL, {
-    method: "POST",
-    body: JSON.stringify({ type: "addProduct", name, price, password })
-  });
-  alert("✅ Товар добавлен!");
-  document.getElementById("newName").value = "";
-  document.getElementById("newPrice").value = "";
-  showProducts();
-}
-
-// -------------------- ПОКАЗ СПИСКА --------------------
-async function showProducts() {
-  const res = await fetch(GAS_URL);
-  const data = await res.json();
-  const list = document.getElementById("productList");
-  list.innerHTML = "";
-  data.forEach(p => {
-    list.innerHTML += `
-      <div>
-        <input type="text" value="${p.name}" disabled>
-        <input type="number" value="${p.price}" id="price-${p.name}">
-        <button onclick="updatePrice('${p.name}')">💾</button>
-        <button onclick="deleteProduct('${p.name}')">❌</button>
-      </div>`;
-  });
-}
-
-// -------------------- УДАЛЕНИЕ --------------------
-async function deleteProduct(name) {
-  if (!confirm(`Удалить ${name}?`)) return;
-  await fetch(GAS_URL, {
-    method: "POST",
-    body: JSON.stringify({ type: "deleteProduct", name, password })
-  });
-  showProducts();
-}
-
-// -------------------- ОБНОВЛЕНИЕ ЦЕНЫ --------------------
-async function updatePrice(name) {
-  const newPrice = document.getElementById(`price-${name}`).value;
-  await fetch(GAS_URL, {
-    method: "POST",
-    body: JSON.stringify({ type: "deleteProduct", name, password })
-  });
-  await fetch(GAS_URL, {
-    method: "POST",
-    body: JSON.stringify({ type: "addProduct", name, price: newPrice, password })
-  });
-  alert("💾 Цена обновлена!");
-  showProducts();
-}
-
-// -------------------- АДМИН --------------------
-function login() {
-  const pass = document.getElementById("adminPass").value;
-  if (pass === "admin123") {
-    password = pass;
-    document.getElementById("login").classList.add("hidden");
-    document.getElementById("adminPanel").classList.remove("hidden");
-    showProducts();
-  } else {
-    alert("❌ Неверный пароль!");
+    const shop = document.getElementById("shop");
+    shop.innerHTML = "";
+    data.forEach(p => {
+      shop.innerHTML += `
+        <div class="product">
+          <b>${p.name}</b><br>
+          Нарх: ${p.price} сомонӣ<br>
+          <button onclick="addToCart('${p.name}', ${p.price})">➕ Сабад</button>
+        </div>`;
+    });
+  } catch (e) {
+    alert("Хато ҳангоми боркунӣ: " + e.message);
   }
 }
 
-function logout() {
-  password = "";
-  document.getElementById("adminPanel").classList.add("hidden");
-  document.getElementById("login").classList.remove("hidden");
+function addToCart(name, price) {
+  cart.push({ name, price });
+  alert(`${name} ба сабад илова шуд!`);
 }
 
-// -------------------- КОРЗИНА --------------------
 function openCart() {
   document.getElementById("cart").classList.remove("hidden");
   document.getElementById("shop").classList.add("hidden");
   updateCart();
 }
+
 function closeCart() {
   document.getElementById("cart").classList.add("hidden");
   document.getElementById("shop").classList.remove("hidden");
 }
-function addToCart(name, price) {
-  cart.push({ name, price });
-  alert(name + " добавлен в корзину!");
-}
+
 function updateCart() {
   const items = document.getElementById("cart-items");
   items.innerHTML = "";
   let total = 0;
   cart.forEach((item, i) => {
     total += item.price;
-    items.innerHTML += `<div>${item.name} — ${item.price} сом <button onclick="removeItem(${i})">❌</button></div>`;
+    items.innerHTML += `<div>${item.name} — ${item.price} сомонӣ <button onclick="removeItem(${i})">❌</button></div>`;
   });
   document.getElementById("total").innerText = total;
 }
+
 function removeItem(i) {
   cart.splice(i, 1);
   updateCart();
 }
 
-// -------------------- ОТПРАВКА ЗАКАЗА --------------------
 async function sendOrder() {
-  const name = document.getElementById("name").value;
-  const phone = document.getElementById("phone").value;
-  const address = document.getElementById("address").value;
+  const name = document.getElementById("name").value.trim();
+  const phone = document.getElementById("phone").value.trim();
+  const address = document.getElementById("address").value.trim();
   const total = document.getElementById("total").innerText;
 
-  if (!name || !phone || cart.length === 0) return alert("Заполните все поля");
+  if (!name || !phone || cart.length === 0) {
+    alert("Лутфан маълумотро пур кунед."); 
+    return;
+  }
 
-  await fetch(GAS_URL, {
-    method: "POST",
-    mode: "no-cors",
-    body: JSON.stringify({
-      type: "order",
-      customer: { name, phone, address },
-      items: cart,
-      total,
-      currency: "сомони",
-      ua: "TradeWayTJ"
-    })
-  });
+  const payload = {
+    type: "order",
+    customer: { name, phone, address },
+    items: cart,
+    total: Number(total),
+    currency: "сомонӣ"
+  };
 
-  alert("✅ Заказ отправлен!");
-  cart = [];
-  closeCart();
+  try {
+    await fetch(GAS_URL, {
+      method: "POST",
+      mode: "no-cors",
+      body: JSON.stringify(payload)
+    });
+    alert("✅ Фармоиш фиристода шуд!");
+    cart = [];
+    closeCart();
+  } catch (e) {
+    alert("❌ Хатогӣ: " + e.message);
+  }
 }
 
 loadProducts();
