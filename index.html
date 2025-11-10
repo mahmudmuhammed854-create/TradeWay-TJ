@@ -5,75 +5,125 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>TradeWay TJ — Магазин</title>
 <style>
-body { font-family: Arial, sans-serif; margin: 20px; background: #f8f9fa; }
-h1 { text-align: center; color: #333; }
-.product { background: #fff; padding: 10px; margin-bottom: 10px; border-radius: 10px; box-shadow: 0 0 5px rgba(0,0,0,0.1); }
+body { font-family: Arial, sans-serif; background: #f7f8fa; margin: 0; padding: 0; }
+header { background: #007bff; color: #fff; padding: 15px; text-align: center; font-size: 20px; font-weight: bold; }
+.container { padding: 15px; }
+.category-list, .product-list, .cart { background: #fff; padding: 15px; border-radius: 10px; box-shadow: 0 0 6px rgba(0,0,0,0.1); margin-bottom: 20px; }
+.category { background: #e9ecef; padding: 10px; border-radius: 8px; margin: 5px 0; cursor: pointer; transition: 0.3s; }
+.category:hover { background: #ced4da; }
 button { background: #007bff; color: white; border: none; padding: 6px 12px; border-radius: 5px; cursor: pointer; }
 button:hover { background: #0056b3; }
 .hidden { display: none; }
-.cart { background: #fff; padding: 15px; border-radius: 10px; box-shadow: 0 0 6px rgba(0,0,0,0.2); }
+.cart-item { margin-bottom: 5px; }
+input { width: 90%; padding: 8px; margin: 5px 0; border-radius: 6px; border: 1px solid #ccc; }
 </style>
 </head>
 <body>
 
-<h1>🛍 TradeWay TJ</h1>
-<div id="shop"></div>
+<header>🛍 TradeWay TJ</header>
 
-<button onclick="openCart()">🛒 Корзина</button>
+<div class="container">
+  <div id="categories" class="category-list"></div>
+  <div id="products" class="product-list hidden"></div>
+  <div id="cart" class="cart hidden">
+    <h3>🛒 Сабад</h3>
+    <div id="cart-items"></div>
+    <p><b>Ҳамагӣ:</b> <span id="total">0</span> сомонӣ</p>
 
-<div id="cart" class="cart hidden">
-  <h3>🛒 Корзина</h3>
-  <div id="cart-items"></div>
-  <p><b>Итого:</b> <span id="total">0</span> сомонӣ</p>
+    <input type="text" id="name" placeholder="Ном"><br>
+    <input type="text" id="phone" placeholder="Телефон"><br>
+    <input type="text" id="address" placeholder="Суроға"><br>
 
-  <input type="text" id="name" placeholder="Ном"><br><br>
-  <input type="text" id="phone" placeholder="Телефон"><br><br>
-  <input type="text" id="address" placeholder="Суроға"><br><br>
-
-  <button onclick="sendOrder()">📦 Фармоиш</button>
-  <button onclick="closeCart()">⬅️ Бозгашт</button>
+    <button onclick="sendOrder()">📦 Фармоиш додан</button>
+    <button onclick="closeCart()">⬅️ Бозгашт</button>
+  </div>
 </div>
 
+<footer style="text-align:center;padding:10px;">
+  <button onclick="openCart()">🛒 Сабад</button>
+</footer>
+
 <script>
-const GAS_URL = "https://script.google.com/macros/s/AKfycbydkrOnh6EGUB89wrf3xo8y1hg_6nDJyOAwCCI4yFmk7ZtQFbBbv32C9APuSfJoyJGr/exec";
+const GAS_URL = "https://script.google.com/macros/s/AKfycbydkrOnh6EGUB89wrf3xo8y1hg_6nDJyOAwCCl4yFmk7ZtQFbBbv32C9APuSfJoyJGr/exec";
+
+// Демо-данные по категориям (можно подгружать из Google Sheets)
+const categories = {
+  "Электроника": [
+    { name: "Телефон", price: 1500 },
+    { name: "Наушники", price: 200 },
+    { name: "Зарядка", price: 80 }
+  ],
+  "Канцелярия": [
+    { name: "Ручка", price: 10 },
+    { name: "Тетрадь", price: 20 },
+    { name: "Сумка", price: 120 }
+  ],
+  "Либос (Одежда)": [
+    { name: "Футболка", price: 100 },
+    { name: "Штаны", price: 150 },
+    { name: "Куртка", price: 300 }
+  ],
+  "Пойафзол (Обувь)": [
+    { name: "Красовка", price: 250 },
+    { name: "Башмак", price: 200 }
+  ],
+  "Постельное бельё": [
+    { name: "Комплект 1", price: 400 },
+    { name: "Комплект 2", price: 600 }
+  ],
+  "Атр (Духи)": [
+    { name: "Dior Sauvage", price: 800 },
+    { name: "Versace Eros", price: 900 }
+  ]
+};
+
 let cart = [];
 
-async function loadProducts() {
-  try {
-    const res = await fetch(GAS_URL, { headers: { "Accept": "application/json" } });
-    let data;
-    try { data = await res.json(); } 
-    catch { data = JSON.parse(await res.text()); }
+function loadCategories() {
+  const container = document.getElementById("categories");
+  container.innerHTML = "";
+  Object.keys(categories).forEach(cat => {
+    container.innerHTML += `<div class="category" onclick="openCategory('${cat}')">${cat}</div>`;
+  });
+}
 
-    const shop = document.getElementById("shop");
-    shop.innerHTML = "";
-    data.forEach(p => {
-      shop.innerHTML += `
-        <div class="product">
-          <b>${p.name}</b><br>
-          Нарх: ${p.price} сомонӣ<br>
-          <button onclick="addToCart('${p.name}', ${p.price})">➕ Сабад</button>
-        </div>`;
-    });
-  } catch (e) {
-    alert("Хато ҳангоми боркунӣ: " + e.message);
-  }
+function openCategory(cat) {
+  const list = document.getElementById("products");
+  const cats = document.getElementById("categories");
+  cats.classList.add("hidden");
+  list.classList.remove("hidden");
+
+  list.innerHTML = `<h3>${cat}</h3>`;
+  categories[cat].forEach(p => {
+    list.innerHTML += `
+      <div class="product">
+        <b>${p.name}</b> — ${p.price} сомонӣ 
+        <button onclick="addToCart('${p.name}', ${p.price})">➕ Сабад</button>
+      </div>`;
+  });
+  list.innerHTML += `<br><button onclick="backToCategories()">⬅️ Бозгашт</button>`;
+}
+
+function backToCategories() {
+  document.getElementById("products").classList.add("hidden");
+  document.getElementById("categories").classList.remove("hidden");
 }
 
 function addToCart(name, price) {
   cart.push({ name, price });
-  alert(`${name} ба сабад илова шуд!`);
+  alert(name + " ба сабад илова шуд!");
 }
 
 function openCart() {
+  document.getElementById("categories").classList.add("hidden");
+  document.getElementById("products").classList.add("hidden");
   document.getElementById("cart").classList.remove("hidden");
-  document.getElementById("shop").classList.add("hidden");
   updateCart();
 }
 
 function closeCart() {
   document.getElementById("cart").classList.add("hidden");
-  document.getElementById("shop").classList.remove("hidden");
+  document.getElementById("categories").classList.remove("hidden");
 }
 
 function updateCart() {
@@ -82,7 +132,8 @@ function updateCart() {
   let total = 0;
   cart.forEach((item, i) => {
     total += item.price;
-    items.innerHTML += `<div>${item.name} — ${item.price} сомонӣ <button onclick="removeItem(${i})">❌</button></div>`;
+    items.innerHTML += `<div class="cart-item">${item.name} — ${item.price} сомонӣ 
+      <button onclick="removeItem(${i})">❌</button></div>`;
   });
   document.getElementById("total").innerText = total;
 }
@@ -125,8 +176,7 @@ async function sendOrder() {
   }
 }
 
-loadProducts();
+loadCategories();
 </script>
 </body>
 </html>
-
