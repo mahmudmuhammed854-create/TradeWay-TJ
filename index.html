@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>TradeWay TJ — Магазин</title>
+<title>TradeWay TJ — Магозаи онлайн</title>
 <style>
 body { font-family: Arial, sans-serif; background: #f7f8fa; margin: 0; padding: 0; }
 header { background: #007bff; color: #fff; padding: 15px; text-align: center; font-size: 20px; font-weight: bold; }
@@ -23,62 +23,69 @@ input { width: 90%; padding: 8px; margin: 5px 0; border-radius: 6px; border: 1px
 <header>🛍 TradeWay TJ</header>
 
 <div class="container">
+
+  <!-- Рӯйхати категорияҳо -->
   <div id="categories" class="category-list"></div>
+
+  <!-- Маҳсулотҳо -->
   <div id="products" class="product-list hidden"></div>
+
+  <!-- Сабад -->
   <div id="cart" class="cart hidden">
     <h3>🛒 Сабад</h3>
     <div id="cart-items"></div>
     <p><b>Ҳамагӣ:</b> <span id="total">0</span> сомонӣ</p>
 
     <input type="text" id="name" placeholder="Ном"><br>
-    <input type="text" id="phone" placeholder="Телефон"><br>
+    <input type="text" id="phone" placeholder="Рақами телефон"><br>
     <input type="text" id="address" placeholder="Суроға"><br>
 
     <button onclick="sendOrder()">📦 Фармоиш додан</button>
     <button onclick="closeCart()">⬅️ Бозгашт</button>
   </div>
+
+  <!-- 🌟 Админ-панел -->
+  <div id="admin" class="product-list hidden">
+    <h3>➕ Иловаи моли нав</h3>
+    <input id="newCat" placeholder="Категория"><br>
+    <input id="newName" placeholder="Номи мол"><br>
+    <input id="newPrice" type="number" placeholder="Нарх (сомонӣ)"><br>
+    <button onclick="addProduct()">💾 Сабт</button>
+    <button onclick="backToCategories()">⬅️ Бозгашт</button>
+  </div>
+
 </div>
 
 <footer style="text-align:center;padding:10px;">
   <button onclick="openCart()">🛒 Сабад</button>
+  <button onclick="openAdmin()">🔧 Админ-панел</button>
 </footer>
 
 <script>
-const GAS_URL = "https://script.google.com/macros/s/AKfycbytsSSmd3wdd8TTHJkHKgmDUeoRxC8lj8B6pRbkzdN2AA_g_g0o1vajckDFIksG7L6T/exec";
+const GAS_URL = "https://script.google.com/macros/s/AKfycbw1CLlk0akY9UzFrMdtDEDhkFK5b2gNPdCxXwe2-MmprJe_Se9LBXk3Iy1p_akenj7d/exec";
 
-// Демо-данные по категориям (можно подгружать из Google Sheets)
+// Маълумоти намунавӣ (агар аз Google Sheets нахоҳад гирифт)
 const categories = {
   "Электроника": [
     { name: "Телефон", price: 1500 },
-    { name: "Наушники", price: 200 },
+    { name: "Наушник", price: 200 },
     { name: "Зарядка", price: 80 }
   ],
-  "Канцелярия": [
-    { name: "Ручка", price: 10 },
-    { name: "Тетрадь", price: 20 },
+  "Канселярия": [
+    { name: "Қалам", price: 10 },
+    { name: "Дафтар", price: 20 },
     { name: "Сумка", price: 120 }
   ],
-  "Либос (Одежда)": [
+  "Либос": [
     { name: "Футболка", price: 100 },
-    { name: "Штаны", price: 150 },
-    { name: "Куртка", price: 300 }
-  ],
-  "Пойафзол (Обувь)": [
-    { name: "Красовка", price: 250 },
-    { name: "Башмак", price: 200 }
-  ],
-  "Постельное бельё": [
-    { name: "Комплект 1", price: 400 },
-    { name: "Комплект 2", price: 600 }
-  ],
-  "Атр (Духи)": [
-    { name: "Dior Sauvage", price: 800 },
-    { name: "Versace Eros", price: 900 }
+    { name: "Шим", price: 150 },
+    { name: "Курта", price: 300 }
   ]
 };
 
 let cart = [];
 
+// === Категорияҳо ===
 function loadCategories() {
   const container = document.getElementById("categories");
   container.innerHTML = "";
@@ -89,8 +96,7 @@ function loadCategories() {
 
 function openCategory(cat) {
   const list = document.getElementById("products");
-  const cats = document.getElementById("categories");
-  cats.classList.add("hidden");
+  document.getElementById("categories").classList.add("hidden");
   list.classList.remove("hidden");
 
   list.innerHTML = `<h3>${cat}</h3>`;
@@ -106,9 +112,12 @@ function openCategory(cat) {
 
 function backToCategories() {
   document.getElementById("products").classList.add("hidden");
+  document.getElementById("cart").classList.add("hidden");
+  document.getElementById("admin").classList.add("hidden");
   document.getElementById("categories").classList.remove("hidden");
 }
 
+// === Сабад ===
 function addToCart(name, price) {
   cart.push({ name, price });
   alert(name + " ба сабад илова шуд!");
@@ -117,6 +126,7 @@ function addToCart(name, price) {
 function openCart() {
   document.getElementById("categories").classList.add("hidden");
   document.getElementById("products").classList.add("hidden");
+  document.getElementById("admin").classList.add("hidden");
   document.getElementById("cart").classList.remove("hidden");
   updateCart();
 }
@@ -150,7 +160,7 @@ async function sendOrder() {
   const total = document.getElementById("total").innerText;
 
   if (!name || !phone || cart.length === 0) {
-    alert("Лутфан маълумотро пур кунед."); 
+    alert("Лутфан маълумотро пурра ворид намоед!"); 
     return;
   }
 
@@ -176,8 +186,48 @@ async function sendOrder() {
   }
 }
 
+// === Админ-панел ===
+function openAdmin() {
+  document.getElementById("categories").classList.add("hidden");
+  document.getElementById("products").classList.add("hidden");
+  document.getElementById("cart").classList.add("hidden");
+  document.getElementById("admin").classList.remove("hidden");
+}
+
+async function addProduct() {
+  const cat = document.getElementById("newCat").value.trim();
+  const name = document.getElementById("newName").value.trim();
+  const price = Number(document.getElementById("newPrice").value);
+
+  if (!cat || !name || !price) {
+    alert("❗ Лутфан ҳамаи майдонҳоро пур кунед!"); 
+    return;
+  }
+
+  const payload = {
+    type: "addProduct",
+    category: cat,
+    name: name,
+    price: price
+  };
+
+  try {
+    await fetch(GAS_URL, {
+      method: "POST",
+      mode: "no-cors",
+      body: JSON.stringify(payload)
+    });
+    alert("✅ Мол ба база илова шуд!");
+    document.getElementById("newCat").value = "";
+    document.getElementById("newName").value = "";
+    document.getElementById("newPrice").value = "";
+    backToCategories();
+  } catch (e) {
+    alert("❌ Хатогӣ: " + e.message);
+  }
+}
+
 loadCategories();
 </script>
 </body>
 </html>
-
