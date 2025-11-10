@@ -1,10 +1,10 @@
 <!doctype html>
-<html lang="ru">
+<html lang="tg">
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Demo Shop — Мини‑шаблон</title>
-  <meta name="description" content="Лёгкий шаблон интернет‑магазина с интеграцией Google Apps Script">
+  <title>TradeWay TJ — Дӯкони онлайн</title>
+  <meta name="description" content="Дӯкони онлайн бо сабади фаъол ва ирсоли фармоиш ба Google Apps Script">
   <style>
     :root{
       --bg:#0f172a; --surface:#111827; --muted:#94a3b8; --text:#e5e7eb;
@@ -17,7 +17,6 @@
     a{color:inherit}
     .container{max-width:1200px;margin:0 auto;padding:0 20px}
 
-    /* Header */
     header{position:sticky;top:0;z-index:50;backdrop-filter:saturate(140%) blur(10px);background:rgba(10,14,25,.6);border-bottom:1px solid var(--border)}
     .nav{display:flex;align-items:center;gap:16px;justify-content:space-between;padding:14px 0}
     .brand{display:flex;align-items:center;gap:10px;font-weight:700;letter-spacing:.5px}
@@ -29,23 +28,19 @@
     .btn:hover{transform:translateY(-1px);box-shadow:0 6px 18px rgba(0,0,0,.25)}
     .btn.primary{background:linear-gradient(180deg,#22c55e,#16a34a);border-color:#1a2c22;color:#04170b}
 
-    /* Hero */
     .hero{padding:36px 0 8px}
     .hero .wrap{display:flex;gap:20px;align-items:center;justify-content:space-between}
     .title{font-size:28px;font-weight:800;line-height:1.2;margin:0}
     .subtitle{margin:6px 0 0;color:var(--muted)}
 
-    /* Controls */
     .controls{display:flex;gap:10px;flex-wrap:wrap;margin:16px 0}
     .select{appearance:none;background:#0b1325;border:1px solid var(--border);border-radius:12px;color:var(--text);padding:10px 12px}
 
-    /* Grid */
     .grid{display:grid;grid-template-columns:repeat(4,1fr);gap:16px}
     @media (max-width:1024px){.grid{grid-template-columns:repeat(3,1fr)}}
     @media (max-width:768px){.grid{grid-template-columns:repeat(2,1fr)}.input{min-width:unset;width:100%}}
     @media (max-width:480px){.grid{grid-template-columns:1fr}}
 
-    /* Card */
     .card{background:linear-gradient(180deg,#0a1220,var(--card));border:1px solid var(--border);border-radius:18px;overflow:hidden;display:flex;flex-direction:column;min-height:100%}
     .thumb{aspect-ratio:4/3;background:#0a0e18;position:relative;overflow:hidden}
     .thumb img{width:100%;height:100%;object-fit:cover;display:block;transition:transform .35s ease}
@@ -61,7 +56,6 @@
     .qty button{width:30px;height:30px;border-radius:10px;border:1px solid var(--border);background:#0c152a;color:var(--text);cursor:pointer}
     .add{margin-top:auto}
 
-    /* Cart panel */
     .cart-overlay{position:fixed;inset:0;background:rgba(0,0,0,.45);backdrop-filter:blur(2px);display:none;z-index:60}
     .cart{position:fixed;right:0;top:0;height:100dvh;width:380px;max-width:100%;background:#0b1325;border-left:1px solid var(--border);box-shadow:-10px 0 30px rgba(0,0,0,.3);transform:translateX(105%);transition:transform .25s ease;z-index:61;display:flex;flex-direction:column}
     .cart.open{transform:translateX(0)}
@@ -69,9 +63,6 @@
     .cart-items{padding:10px 12px;overflow:auto;flex:1}
     .cart-row{display:grid;grid-template-columns:64px 1fr auto;gap:10px;align-items:center;padding:10px;border:1px solid var(--border);border-radius:12px;background:#0a1324;margin-bottom:10px}
     .cart-row img{width:64px;height:64px;object-fit:cover;border-radius:10px}
-    .cart-row .row-title{font-weight:700}
-    .cart-row .row-meta{color:var(--muted);font-size:12px}
-    .cart-row .row-actions{display:flex;gap:8px;align-items:center}
     .cart-footer{border-top:1px solid var(--border);padding:12px 16px;display:grid;gap:10px}
     .total{display:flex;align-items:center;justify-content:space-between;font-weight:800}
     .danger{background:linear-gradient(180deg,var(--danger),#b91c1c);border-color:#7f1d1d;color:#fff}
@@ -79,211 +70,66 @@
 </head>
 <body>
   <header>
-    <div class="container nav" role="navigation" aria-label="Основная навигация">
-      <div class="brand" aria-label="Demo Shop">
-        <span class="dot" aria-hidden="true"></span>
-        <span>Demo Shop</span>
-      </div>
-      <div class="input" role="search">
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M21 21l-3.5-3.5" stroke="#64748b" stroke-width="2" stroke-linecap="round"/><circle cx="11" cy="11" r="7" stroke="#64748b" stroke-width="2"/></svg>
-        <input id="q" placeholder="Поиск товаров… (например, watch)" aria-label="Поиск" />
-      </div>
+    <div class="container nav">
+      <div class="brand"><span class="dot"></span><span>TradeWay TJ</span></div>
+      <div class="input"><input id="q" placeholder="Ҷустуҷӯи маҳсулот..." /></div>
       <div class="actions">
-        <select id="sort" class="select" aria-label="Сортировка">
-          <option value="popular">Популярные</option>
-          <option value="price_asc">Цена: по возрастанию</option>
-          <option value="price_desc">Цена: по убыванию</option>
+        <select id="sort" class="select">
+          <option value="popular">Машҳур</option>
+          <option value="price_asc">Нарх: аз арзон то гарон</option>
+          <option value="price_desc">Нарх: аз гарон то арзон</option>
         </select>
-        <button id="openCart" class="btn" aria-haspopup="dialog" aria-controls="cartPanel" aria-expanded="false">🛒 Корзина <span id="cartCount" aria-live="polite" style="margin-left:6px;opacity:.7">0</span></button>
-        <button id="cta" class="btn primary">Каталог</button>
+        <button id="openCart" class="btn">🛒 Сабад <span id="cartCount">0</span></button>
       </div>
     </div>
   </header>
 
   <main class="container">
     <section class="hero">
-      <div class="wrap">
-        <div>
-          <h1 class="title">Лёгкий старт интернет‑магазина</h1>
-          <p class="subtitle">Чистый HTML/CSS/JS, адаптивная сетка товаров, фильтр/сортировка и корзина с подсчётом суммы.</p>
-        </div>
-      </div>
-      <div class="controls" aria-label="Фильтры">
-        <button class="btn" data-filter="all">Все</button>
-        <button class="btn" data-filter="wear">Одежда</button>
-        <button class="btn" data-filter="tech">Техника</button>
-        <button class="btn" data-filter="accessories">Аксессуары</button>
-      </div>
+      <h1 class="title">Каталоги маҳсулот</h1>
+      <p class="subtitle">Маҳсулотро интихоб кунед ва фармоиш фиристед.</p>
     </section>
-
-    <section aria-label="Список товаров">
-      <div id="grid" class="grid"></div>
-    </section>
+    <section><div id="grid" class="grid"></div></section>
   </main>
 
-  <!-- Overlay + Cart Panel -->
-  <div id="overlay" class="cart-overlay" aria-hidden="true"></div>
-  <aside id="cartPanel" class="cart" role="dialog" aria-label="Корзина">
+  <div id="overlay" class="cart-overlay"></div>
+  <aside id="cartPanel" class="cart">
     <div class="cart-header">
-      <strong>Корзина</strong>
+      <strong>Сабад</strong>
       <button id="closeCart" class="btn">✕</button>
     </div>
     <div id="cartItems" class="cart-items"></div>
     <div class="cart-footer">
-      <div class="total">Итого: <span id="cartTotal">0 ₽</span></div>
-      <button id="checkout" class="btn primary">Перейти к оформлению</button>
-      <button id="clear" class="btn danger">Очистить корзину</button>
-      <small style="color:var(--muted)">* В демо оформление не подключено — здесь можно вызвать ваш бэкенд/платёжный шлюз.</small>
+      <div class="total">Ҳамагӣ: <span id="cartTotal">0 сомонӣ</span></div>
+      <button id="checkout" class="btn primary">Фиристодани фармоиш</button>
+      <button id="clear" class="btn danger">Пок кардани сабад</button>
     </div>
   </aside>
 
   <script>
-    // ======= Google Apps Script интеграция =======
-    const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzdTlOP4ZsnzUT9mVddBtV5uqef_t6fq9jaAf_b6nBhio7eKR_g3dH3wnkUfQweh59j/exec';
-
-    async function sendOrder(cart){
-      try{
-        const items = Array.from(cart.values()).map(({product, qty})=>({ id: product.id, name: product.name, price: product.price, qty }));
-        const res = await fetch(SCRIPT_URL, { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({ action:'order', items }) });
-        // Пытаемся распарсить JSON, но если сервер вернул текст — отобразим его как есть
-        let data; try { data = await res.json(); } catch{ data = await res.text(); }
-        alert('✅ Заказ отправлен! Ответ сервера:\n' + (typeof data==='string'?data:JSON.stringify(data)));
-      }catch(err){ alert('Ошибка при отправке заказа: ' + err.message); }
-    }
-
-    // ======= ДАННЫЕ ТОВАРОВ =======
-    const products = [
-      {id:1, name:'Minimal Watch', price:4990, oldPrice:6990, tag:'accessories', rating:4.6, img:'https://picsum.photos/seed/watch/800/600'},
-      {id:2, name:'Noise‑Cancel Headphones', price:12990, oldPrice:14990, tag:'tech', rating:4.8, img:'https://picsum.photos/seed/headphones/800/600'},
-      {id:3, name:'Running Sneakers', price:6990, tag:'wear', rating:4.4, img:'https://picsum.photos/seed/sneakers/800/600'},
-      {id:4, name:'Smartphone Lite', price:19990, oldPrice:22990, tag:'tech', rating:4.7, img:'https://picsum.photos/seed/phone/800/600'},
-      {id:5, name:'Leather Backpack', price:8990, tag:'accessories', rating:4.5, img:'https://picsum.photos/seed/backpack/800/600'},
-      {id:6, name:'Cotton T‑Shirt', price:1590, tag:'wear', rating:4.3, img:'https://picsum.photos/seed/tshirt/800/600'},
-      {id:7, name:'Wireless Charger', price:2490, tag:'tech', rating:4.1, img:'https://picsum.photos/seed/charger/800/600'},
-      {id:8, name:'Sunglasses', price:2790, tag:'accessories', rating:4.2, img:'https://picsum.photos/seed/sunglasses/800/600'}
+    const SCRIPT_URL='https://script.google.com/macros/s/AKfycbzdTlOP4ZsnzUT9mVddBtV5uqef_t6fq9jaAf_b6nBhio7eKR_g3dH3wnkUfQweh59j/exec';
+    const products=[
+      {id:1,name:'Соати Minimal',price:4990,img:'https://picsum.photos/seed/watch/800/600'},
+      {id:2,name:'Гӯшмонаки садо‑баранда',price:12990,img:'https://picsum.photos/seed/headphones/800/600'},
+      {id:3,name:'Крассовкаҳо',price:6990,img:'https://picsum.photos/seed/sneakers/800/600'},
+      {id:4,name:'Смартфон',price:19990,img:'https://picsum.photos/seed/phone/800/600'}
     ];
-
-    // ======= СОСТОЯНИЕ/УТИЛИТЫ =======
-    const state = { filter:'all', sort:'popular', q:'', cart: new Map() };
-    const fmt = n => n.toLocaleString('ru-RU');
-    const el = (tag, attrs={}, ...children) => {
-      const node = document.createElement(tag);
-      Object.entries(attrs).forEach(([k,v]) => {
-        if(k.startsWith('on') && typeof v === 'function') node.addEventListener(k.slice(2), v);
-        else if(v !== false && v != null) node.setAttribute(k, v===true ? '' : v);
-      });
-      children.flat().forEach(c => node.append(c instanceof Node ? c : document.createTextNode(c)));
-      return node;
-    };
-
-    // ======= РЕНДЕР СЕТКИ =======
-    const grid = document.getElementById('grid');
-    function renderGrid(){
-      grid.innerHTML='';
-      let list = products.filter(p => state.filter==='all' ? true : p.tag===state.filter);
-      if(state.q){ const q = state.q.toLowerCase(); list = list.filter(p => p.name.toLowerCase().includes(q)); }
-      if(state.sort==='price_asc') list.sort((a,b)=>a.price-b.price);
-      if(state.sort==='price_desc') list.sort((a,b)=>b.price-a.price);
-      if(state.sort==='popular') list.sort((a,b)=>b.rating-a.rating);
-      list.forEach(p => grid.append(card(p)));
-      if(!list.length) grid.append(el('p',{style:'opacity:.75'},'Ничего не найдено.'));
-    }
-
-    function card(p){
-      const badge = p.oldPrice ? el('span',{class:'badge'},'−', Math.round((1-p.price/p.oldPrice)*100),'%') : '';
-      return el('article',{class:'card', tabindex:'0', 'aria-label':p.name},
-        el('div',{class:'thumb'}, el('img',{src:p.img, alt:p.name, loading:'lazy'}), badge),
-        el('div',{class:'body'},
-          el('div',{class:'name'}, p.name),
-          el('div',{class:'meta'}, 'Категория: ', p.tag, ' · ★ ', p.rating),
-          el('div',{class:'price'}, el('span',{class:'new'}, fmt(p.price),' ₽'), p.oldPrice ? el('span',{class:'old'}, fmt(p.oldPrice),' ₽') : ''),
-          el('div',{class:'qty','aria-label':'Количество'},
-            el('button',{onclick:()=>updateCart(p,-1)}, '−'),
-            el('span',{id:`qty-${p.id}`,'aria-live':'polite'}, getQty(p.id)),
-            el('button',{onclick:()=>updateCart(p,1)}, '+')
-          ),
-          el('button',{class:'btn add',onclick:()=>updateCart(p,1)}, 'Добавить в корзину')
-        )
-      );
-    }
-
-    function getQty(id){ return state.cart.get(id)?.qty || 0; }
-
-    // ======= КОРЗИНА =======
-    const cartPanel = document.getElementById('cartPanel');
-    const overlay = document.getElementById('overlay');
-    const cartItems = document.getElementById('cartItems');
-    const cartTotal = document.getElementById('cartTotal');
-    const cartCount = document.getElementById('cartCount');
-
-    function openCart(){ cartPanel.classList.add('open'); overlay.style.display='block'; document.getElementById('openCart').setAttribute('aria-expanded','true'); }
-    function closeCart(){ cartPanel.classList.remove('open'); overlay.style.display='none'; document.getElementById('openCart').setAttribute('aria-expanded','false'); }
-
-    function updateCart(product, delta){
-      const item = state.cart.get(product.id) || {product, qty:0};
-      item.qty = Math.max(0, item.qty + delta);
-      if(item.qty===0) state.cart.delete(product.id); else state.cart.set(product.id, item);
-      const qtyNode = document.getElementById(`qty-${product.id}`); if(qtyNode) qtyNode.textContent = getQty(product.id);
-      renderCart();
-    }
-
-    function renderCart(){
-      cartItems.innerHTML=''; let total = 0, count = 0;
-      for(const {product, qty} of state.cart.values()){
-        const line = product.price * qty; total += line; count += qty;
-        cartItems.append(el('div',{class:'cart-row'},
-          el('img',{src:product.img, alt:product.name}),
-          el('div',{}, el('div',{class:'row-title'}, product.name), el('div',{class:'row-meta'}, `${fmt(product.price)} ₽ × ${qty} = ${fmt(line)} ₽`)),
-          el('div',{class:'row-actions'},
-            el('button',{onclick:()=>updateCart(product,-1)}, '−'),
-            el('span',{}, qty),
-            el('button',{onclick:()=>updateCart(product,1)}, '+'),
-            el('button',{class:'btn',onclick:()=>{state.cart.delete(product.id); renderCart();}}, 'Удалить')
-          )
-        ));
-      }
-      if(state.cart.size===0){ cartItems.append(el('p',{style:'opacity:.75'},'Корзина пуста.')); }
-      cartTotal.textContent = fmt(total) + ' ₽'; cartCount.textContent = count;
-    }
-
-    // ======= ИНИЦИАЛИЗАЦИЯ И БЕЗОПАСНОЕ ПОДКЛЮЧЕНИЕ СЛУШАТЕЛЕЙ =======
-    function safeOn(id, type, handler){ const n = document.getElementById(id); if(!n){ console.warn(`[init] узел #${id} не найден`); return; } n.addEventListener(type, handler); }
-
-    function init(){
-      renderGrid();
-      renderCart();
-      safeOn('openCart','click', openCart);
-      safeOn('closeCart','click', closeCart);
-      overlay.addEventListener('click', closeCart);
-      safeOn('clear','click', ()=>{state.cart.clear(); renderCart(); renderGrid();});
-      safeOn('checkout','click', ()=>{
-        if(state.cart.size===0){ alert('Корзина пуста'); return; }
-        sendOrder(state.cart);
-      });
-      const sort = document.getElementById('sort'); if(sort) sort.addEventListener('change', e=>{ state.sort = e.target.value; renderGrid(); });
-      const q = document.getElementById('q'); if(q) q.addEventListener('input', e=>{ state.q = e.target.value; renderGrid(); });
-      document.querySelectorAll('[data-filter]').forEach(b=>b.addEventListener('click',()=>{ state.filter = b.getAttribute('data-filter'); renderGrid(); }));
-    }
-
-    // Гарантируем, что DOM готов даже если скрипт переместят в <head>
-    if(document.readyState === 'loading') document.addEventListener('DOMContentLoaded', init); else init();
-
-    // ======= ПРОСТЕЙШИЕ «ТЕСТЫ» (не ломают работу) =======
-    ;(function smokeTests(){
-      const tests = [];
-      const a = (name, fn)=>{ try{ fn(); console.info('✅', name); tests.push({name, ok:true}); } catch(e){ console.error('❌', name, e); tests.push({name, ok:false, e}); } };
-      a('Элемент #checkout существует', ()=>{ if(!document.getElementById('checkout')) throw new Error('#checkout not found'); });
-      a('Добавление в корзину увеличивает счётчик', ()=>{
-        const before = Number(document.getElementById('cartCount').textContent)||0;
-        updateCart(products[0], +1);
-        const after = Number(document.getElementById('cartCount').textContent)||0;
-        if(!(after>before)) throw new Error('cartCount not increased');
-      });
-      // Не триггерим реальный запрос: просто убеждаемся, что sendOrder — функция
-      a('Функция sendOrder определена', ()=>{ if(typeof sendOrder!== 'function') throw new Error('sendOrder missing'); });
-      // Выводим краткий отчёт
-      console.table(tests.map(t=>({test:t.name, ok:t.ok})));
-    })();
+    const state={cart:new Map()};
+    const fmt=n=>n.toLocaleString('ru-RU');
+    function card(p){return`<article class='card'><div class='thumb'><img src='${p.img}' alt='${p.name}'></div><div class='body'><div class='name'>${p.name}</div><div class='price'>${fmt(p.price)} сомонӣ</div><button class='btn add' onclick='updateCart(${p.id},1)'>Илова ба сабад</button></div></article>`;}
+    const grid=document.getElementById('grid');
+    function renderGrid(){grid.innerHTML=products.map(card).join('');}
+    function updateCart(id,delta){const p=products.find(x=>x.id===id);if(!p)return;const item=state.cart.get(id)||{product:p,qty:0};item.qty=Math.max(0,item.qty+delta);if(item.qty===0)state.cart.delete(id);else state.cart.set(id,item);renderCart();}
+    function renderCart(){const cI=document.getElementById('cartItems');let total=0,count=0;cI.innerHTML='';state.cart.forEach(({product,qty})=>{total+=product.price*qty;count+=qty;cI.innerHTML+=`<div class='cart-row'><img src='${product.img}' alt='${product.name}'><div><div class='row-title'>${product.name}</div><div class='row-meta'>${fmt(product.price)} сомонӣ × ${qty}</div></div><div class='row-actions'><button onclick='updateCart(${product.id},-1)'>−</button><span>${qty}</span><button onclick='updateCart(${product.id},1)'>+</button></div></div>`;});document.getElementById('cartTotal').textContent=fmt(total)+' сомонӣ';document.getElementById('cartCount').textContent=count;}
+    function openCart(){document.getElementById('cartPanel').classList.add('open');document.getElementById('overlay').style.display='block';}
+    function closeCart(){document.getElementById('cartPanel').classList.remove('open');document.getElementById('overlay').style.display='none';}
+    async function sendOrder(cart){try{const items=Array.from(cart.values()).map(({product,qty})=>({id:product.id,name:product.name,price:product.price,qty,subtotal:product.price*qty}));const total=items.reduce((s,i)=>s+i.subtotal,0);const order={action:'order',items,total,currency:'сомонӣ',customer:{name:prompt('Номи худро ворид кунед:')||'',phone:prompt('Рақами телефони худро ворид кунед:')||'',address:prompt('Суроғаи худро ворид кунед:')||''}};const res=await fetch(SCRIPT_URL,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(order)});const text=await res.text();let data;try{data=JSON.parse(text);}catch{data=text;}if(data.ok){alert('✅ Фармоиш бо муваффақият фиристода шуд!');state.cart.clear();renderCart();}else{alert('⚠️ Хато дар сервер: '+(data.error||JSON.stringify(data)));}}catch(err){alert('❌ Хато ҳангоми фиристодани фармоиш: '+err.message);}}
+    document.getElementById('openCart').addEventListener('click',openCart);
+    document.getElementById('closeCart').addEventListener('click',closeCart);
+    document.getElementById('overlay').addEventListener('click',closeCart);
+    document.getElementById('checkout').addEventListener('click',()=>{if(state.cart.size===0){alert('Сабад холӣ аст');return;}sendOrder(state.cart);});
+    document.getElementById('clear').addEventListener('click',()=>{state.cart.clear();renderCart();});
+    renderGrid();
   </script>
 </body>
 </html>
