@@ -24,10 +24,7 @@ input { width: 90%; padding: 8px; margin: 5px 0; border-radius: 6px; border: 1px
 
 <div class="container">
 
-  <!-- Рӯйхати категорияҳо -->
   <div id="categories" class="category-list"></div>
-
-  <!-- Маҳсулотҳо -->
   <div id="products" class="product-list hidden"></div>
 
   <!-- Сабад -->
@@ -63,8 +60,8 @@ input { width: 90%; padding: 8px; margin: 5px 0; border-radius: 6px; border: 1px
 
 <script>
 const GAS_URL = "https://script.google.com/macros/s/AKfycbw1CLlk0akY9UzFrMdtDEDhkFK5b2gNPdCxXwe2-MmprJe_Se9LBXk3Iy1p_akenj7d/exec";
+const ADMIN_PASSWORD = "12345"; // 🔑 Пароли худро иваз кун!
 
-// Маълумоти намунавӣ (агар аз Google Sheets нахоҳад гирифт)
 const categories = {
   "Электроника": [
     { name: "Телефон", price: 1500 },
@@ -160,7 +157,7 @@ async function sendOrder() {
   const total = document.getElementById("total").innerText;
 
   if (!name || !phone || cart.length === 0) {
-    alert("Лутфан маълумотро пурра ворид намоед!"); 
+    alert("Лутфан маълумотро пурра ворид намоед!");
     return;
   }
 
@@ -186,8 +183,13 @@ async function sendOrder() {
   }
 }
 
-// === Админ-панел ===
+// === Админ-панел бо парол ===
 function openAdmin() {
+  const pass = prompt("Парол ворид кунед:");
+  if (pass !== ADMIN_PASSWORD) {
+    alert("❌ Парол нодуруст аст!");
+    return;
+  }
   document.getElementById("categories").classList.add("hidden");
   document.getElementById("products").classList.add("hidden");
   document.getElementById("cart").classList.add("hidden");
@@ -200,7 +202,7 @@ async function addProduct() {
   const price = Number(document.getElementById("newPrice").value);
 
   if (!cat || !name || !price) {
-    alert("❗ Лутфан ҳамаи майдонҳоро пур кунед!"); 
+    alert("❗ Лутфан ҳамаи майдонҳоро пур кунед!");
     return;
   }
 
