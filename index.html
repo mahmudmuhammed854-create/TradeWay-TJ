@@ -6,57 +6,56 @@
   <title>TradeWay TJ — Дӯкони онлайн</title>
   <meta name="description" content="Дӯкони онлайн бо сабади фаъол ва ирсоли фармоиш ба Google Sheets">
   <style>
-    :root{
+    :root {
       --bg:#0f172a; --surface:#111827; --muted:#94a3b8; --text:#e5e7eb;
-      --primary:#22c55e; --card:#0b1220; --border:#1f2937; --danger:#ef4444;
+      --primary:#22c55e; --card:#0b1220; --border:#1f2937;
     }
     *{box-sizing:border-box;margin:0;padding:0}
-    body{background:linear-gradient(180deg,var(--bg),#0b1022 40%,#0b0f1a);color:var(--text);font:15px/1.5 Inter,system-ui,Segoe UI,Roboto,Arial;min-height:100vh;overflow-x:hidden}
+    body{
+      background:linear-gradient(180deg,var(--bg),#0b1022 40%,#0b0f1a);
+      color:var(--text);
+      font:15px/1.5 Inter,system-ui,Segoe UI,Roboto,Arial;
+      min-height:100vh;
+      overflow-x:hidden;
+    }
     .container{max-width:1200px;margin:0 auto;padding:0 16px}
-    a{color:inherit;text-decoration:none}
-
     header{position:sticky;top:0;z-index:50;backdrop-filter:saturate(140%) blur(10px);background:rgba(10,14,25,.8);border-bottom:1px solid var(--border)}
-    .nav{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:10px 0;flex-wrap:wrap}
-    .brand{display:flex;align-items:center;gap:8px;font-weight:800}
+    .nav{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px;padding:10px 0}
+    .brand{display:flex;align-items:center;gap:8px;font-weight:700;font-size:18px}
     .brand .dot{width:10px;height:10px;border-radius:50%;background:conic-gradient(var(--primary),#10b981)}
-
-    .input{display:flex;align-items:center;gap:8px;background:#0b1325;border:1px solid var(--border);border-radius:12px;padding:6px 10px;min-width:220px;flex:1}
+    .actions{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+    .input{display:flex;align-items:center;gap:8px;background:#0b1325;border:1px solid var(--border);border-radius:12px;padding:6px 10px;flex:1;min-width:180px}
     .input input{all:unset;color:var(--text);width:100%}
-    .btn{border:1px solid var(--border);background:#0c152a;padding:8px 12px;border-radius:12px;color:var(--text);cursor:pointer;transition:.2s;display:inline-flex;align-items:center;gap:6px}
+    .btn{border:1px solid var(--border);background:#0c152a;padding:8px 12px;border-radius:12px;color:var(--text);cursor:pointer;transition:.2s ease;display:inline-flex;align-items:center;gap:6px;font-size:14px}
+    .btn.primary{background:linear-gradient(180deg,#22c55e,#16a34a);border-color:#1a2c22;color:#04170b;font-weight:600}
     .btn:hover{transform:translateY(-1px);box-shadow:0 6px 18px rgba(0,0,0,.25)}
-    .btn.primary{background:linear-gradient(180deg,#22c55e,#16a34a);border-color:#1a2c22;color:#04170b;font-weight:700}
 
-    .hero{text-align:center;padding:22px 0 10px}
+    .hero{text-align:center;padding:24px 0 8px}
     .title{font-size:24px;font-weight:800}
     .subtitle{color:var(--muted);font-size:14px}
 
-    .categories{display:flex;flex-wrap:wrap;justify-content:center;gap:10px;margin:14px 0}
-    .cat-btn{background:#0c152a;border:1px solid var(--border);padding:6px 12px;border-radius:10px;cursor:pointer}
-    .cat-btn.active{background:var(--primary);color:#04170b;font-weight:700}
+    .categories{display:flex;flex-wrap:wrap;justify-content:center;gap:10px;margin:15px 0}
+    .cat-btn{background:#0c152a;border:1px solid var(--border);padding:6px 12px;border-radius:10px;cursor:pointer;transition:0.2s}
+    .cat-btn:hover{background:#1e293b}
+    .cat-btn.active{background:var(--primary);color:#04170b;font-weight:600}
 
     .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:14px;padding-bottom:40px}
-    .card{background:linear-gradient(180deg,#0a1220,var(--card));border:1px solid var(--border);border-radius:16px;overflow:hidden;display:flex;flex-direction:column;transition:transform .25s}
+    .card{background:linear-gradient(180deg,#0a1220,var(--card));border:1px solid var(--border);border-radius:16px;overflow:hidden;display:flex;flex-direction:column;transition:transform .3s ease}
     .card:hover{transform:translateY(-3px)}
-    .thumb{aspect-ratio:4/3;background:#0a0e18;overflow:hidden}
     .thumb img{width:100%;height:100%;object-fit:cover;display:block}
     .body{padding:12px;display:flex;flex-direction:column;gap:8px}
     .name{font-weight:600;font-size:15px}
-    .price{font-weight:800;font-size:16px;color:#bbf7d0}
-    .add{margin-top:auto}
+    .price{font-weight:700;font-size:16px;color:#bbf7d0}
 
-    /* Cart */
     .cart-overlay{position:fixed;inset:0;background:rgba(0,0,0,.45);backdrop-filter:blur(2px);display:none;z-index:60}
-    .cart{position:fixed;right:0;top:0;height:100vh;width:360px;max-width:100%;background:#0b1325;border-left:1px solid var(--border);box-shadow:-10px 0 30px rgba(0,0,0,.3);transform:translateX(105%);transition:transform .25s;z-index:61;display:flex;flex-direction:column}
+    .cart{position:fixed;right:0;top:0;height:100vh;width:350px;max-width:100%;background:#0b1325;border-left:1px solid var(--border);box-shadow:-10px 0 30px rgba(0,0,0,.3);transform:translateX(105%);transition:transform .25s ease;z-index:61;display:flex;flex-direction:column}
     .cart.open{transform:translateX(0)}
     .cart-header{display:flex;align-items:center;justify-content:space-between;padding:12px 14px;border-bottom:1px solid var(--border)}
     .cart-items{padding:10px;overflow:auto;flex:1}
     .cart-row{display:grid;grid-template-columns:64px 1fr auto;gap:8px;align-items:center;padding:8px;border:1px solid var(--border);border-radius:10px;background:#0a1324;margin-bottom:8px}
     .cart-row img{width:64px;height:64px;object-fit:cover;border-radius:8px}
-    .row-actions button{width:28px;height:28px;border-radius:8px;border:1px solid var(--border);background:#0c152a;color:var(--text);cursor:pointer}
     .cart-footer{border-top:1px solid var(--border);padding:12px;display:grid;gap:8px}
     .total{display:flex;align-items:center;justify-content:space-between;font-weight:800}
-
-    @media (max-width:768px){.title{font-size:20px}.btn{font-size:13px}}
   </style>
 </head>
 <body>
@@ -64,20 +63,21 @@
     <div class="container nav">
       <div class="brand"><span class="dot"></span><span>TradeWay TJ</span></div>
       <div class="input"><input id="search" placeholder="Ҷустуҷӯи маҳсулот..." /></div>
-      <button id="openCart" class="btn">🛒 Сабад <span id="cartCount">0</span></button>
+      <div class="actions"><button id="openCart" class="btn">🛒 Сабад <span id="cartCount">0</span></button></div>
     </div>
   </header>
 
   <main class="container">
     <section class="hero">
       <h1 class="title">Категорияҳо</h1>
-      <p class="subtitle">Интихоб кунед категория ё ҷустуҷӯ кунед.</p>
       <div id="categories" class="categories"></div>
     </section>
-    <section><div id="grid" class="grid"></div></section>
+
+    <section>
+      <div id="grid" class="grid"></div>
+    </section>
   </main>
 
-  <!-- Cart -->
   <div id="overlay" class="cart-overlay"></div>
   <aside id="cartPanel" class="cart">
     <div class="cart-header">
@@ -88,163 +88,102 @@
     <div class="cart-footer">
       <div class="total">Ҳамагӣ: <span id="cartTotal">0 сомонӣ</span></div>
       <button id="checkout" class="btn primary">Фиристодани фармоиш</button>
-      <button id="clear" class="btn" style="background:#581515;color:#fff;border-color:#5a1a1a">Пок кардани сабад</button>
+      <button id="clear" class="btn" style="background:#581515;color:#fff">Пок кардани сабад</button>
     </div>
   </aside>
 
   <script>
-    /* === 1) НАСТРОЙКИ === */
+    // 🔗 Подключаем Google Sheets
+    const SHEET_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vQpIR_sMPcVIkHY9EqBhyLYwEz-AqhNV64SCrT_nRiukBFFpmzU13uASf5YeUbnBShga4gowbGxxndo/gviz/tq?tqx=out:json&sheet=products';
 
-    // ТВОЙ Apps Script для приёма заказов
-    const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbw3wsocC-b85NvJ2S0jrW_uLR39MYSJNWy5GDgF7Je0qNvWT_9Ncnkwm0k5RkSo25vf/exec';
+    const state = {cart:new Map(),filter:'Ҳама',products:[]};
+    const fmt = n => n.toLocaleString('ru-RU');
 
-    // ПУБЛИКОВАННАЯ ссылка таблицы -> gviz JSON (лист products)
-    // Если у тебя другой ID публикации — просто замени строку ниже.
-    const SHEET_URL =
-      'https://docs.google.com/spreadsheets/d/e/2PACX-1vQpIR_sMPcVIkHY9EqBhyLYwEz-AqhNV64SCrT_nRiukBFFpmzU13uASf5YeUbnBShga4gowbGxxndo/gviz/tq?tqx=out:json&sheet=products';
-
-    /* === 2) СОСТОЯНИЕ === */
-    let products = [];                       // сюда загрузим товары из таблицы
-    const state = { cart:new Map(), filter:'Ҳама' };
-    const fmt   = n => (+n||0).toLocaleString('ru-RU');
-
-    /* === 3) РЕНДЕР КАТЕГОРИЙ === */
-    const catsDiv  = document.getElementById('categories');
-    const grid     = document.getElementById('grid');
-    const searchEl = document.getElementById('search');
-
-    function getCategories() {
-      const set = new Set(products.map(p => (p.cat||'').trim()).filter(Boolean));
-      return ['Ҳама', ...Array.from(set)];
+    async function loadProducts(){
+      try {
+        const res = await fetch(SHEET_URL);
+        const text = await res.text();
+        const json = JSON.parse(text.substr(47).slice(0,-2));
+        const rows = json.table.rows.map(r=>r.c.map(c=>c?v=c.v:''));
+        const headers = json.table.cols.map(c=>c.label.toLowerCase());
+        state.products = rows.map(r=>{
+          const p={};
+          headers.forEach((h,i)=>p[h]=r[i]);
+          return {id:+p.id,cat:p.cat,name:p.name,price:+p.price,img:p.img};
+        });
+        renderCats();
+        renderGrid();
+      } catch(err){
+        document.getElementById('grid').innerHTML = `<p style="color:red">Хато ҳангоми боркунии маълумот аз Google Sheets 😕<br>${err.message}</p>`;
+      }
     }
 
+    const grid=document.getElementById('grid');
+    const catsDiv=document.getElementById('categories');
+    const search=document.getElementById('search');
+
     function renderCats(){
-      const cats = getCategories();
-      catsDiv.innerHTML = cats.map(c =>
-        `<button class="cat-btn ${state.filter===c?'active':''}" onclick="setCat('${c.replace(/'/g,"\\'")}')">${c}</button>`
-      ).join('');
+      const cats=['Ҳама',...new Set(state.products.map(p=>p.cat))];
+      catsDiv.innerHTML=cats.map(c=>`<button class='cat-btn ${state.filter===c?'active':''}' onclick='setCat("${c}")'>${c}</button>`).join('');
     }
 
     function setCat(c){ state.filter=c; renderCats(); renderGrid(); }
 
-    /* === 4) КАРТОЧКИ ТОВАРОВ === */
     function card(p){
-      return `
-        <article class="card">
-          <div class="thumb"><img src="${p.img}" alt="${p.name}"></div>
-          <div class="body">
-            <div class="name">${p.name}</div>
-            <div class="price">${fmt(p.price)} сомонӣ</div>
-            <button class="btn add" onclick="updateCart(${JSON.stringify(p._key)},1)">Илова ба сабад</button>
-          </div>
-        </article>`;
+      return `<article class='card'>
+        <div class='thumb'><img src='${p.img}' alt='${p.name}'></div>
+        <div class='body'>
+          <div class='name'>${p.name}</div>
+          <div class='price'>${fmt(p.price)} сомонӣ</div>
+          <button class='btn add' onclick='updateCart(${p.id},1)'>Илова ба сабад</button>
+        </div></article>`;
     }
 
     function renderGrid(){
-      const q = (searchEl.value||'').toLowerCase().trim();
-      const list = products.filter(p =>
+      let q = search.value.toLowerCase();
+      let list = state.products.filter(p =>
         (state.filter==='Ҳама' || p.cat===state.filter) &&
-        (p.name.toLowerCase().includes(q) || p.cat.toLowerCase().includes(q))
+        p.name.toLowerCase().includes(q)
       );
-      grid.innerHTML = list.length ? list.map(card).join('') : `<p style="opacity:.7">Маҳсулот ёфт нашуд 😕</p>`;
+      grid.innerHTML = list.map(card).join('') || "<p>Маҳсулот ёфт нашуд 😕</p>";
     }
 
-    /* === 5) КОРЗИНА === */
-    function updateCart(key, delta){
-      const p = products.find(x => x._key === key);
-      if(!p) return;
-      const item = state.cart.get(key) || { product:p, qty:0 };
-      item.qty = Math.max(0, item.qty + delta);
-      if(item.qty===0) state.cart.delete(key); else state.cart.set(key, item);
+    function updateCart(id,delta){
+      const p=state.products.find(x=>x.id===id);
+      if(!p)return;
+      const item=state.cart.get(id)||{product:p,qty:0};
+      item.qty=Math.max(0,item.qty+delta);
+      if(item.qty===0)state.cart.delete(id);
+      else state.cart.set(id,item);
       renderCart();
     }
 
     function renderCart(){
-      const box = document.getElementById('cartItems');
-      let total = 0, count = 0;
-      box.innerHTML = '';
-      state.cart.forEach(({product,qty}) => {
-        total += (product.price||0) * qty;
-        count += qty;
-        box.innerHTML += `
-          <div class="cart-row">
-            <img src="${product.img}" alt="${product.name}">
-            <div>
-              <div style="font-weight:600">${product.name}</div>
-              <div style="opacity:.8">${fmt(product.price)} сомонӣ × ${qty}</div>
-            </div>
-            <div class="row-actions">
-              <button onclick="updateCart(${JSON.stringify(product._key)},-1)">−</button>
-              <span style="display:inline-block;width:24px;text-align:center">${qty}</span>
-              <button onclick="updateCart(${JSON.stringify(product._key)},1)">+</button>
-            </div>
-          </div>`;
+      const cI=document.getElementById('cartItems');
+      let total=0,count=0;
+      cI.innerHTML='';
+      state.cart.forEach(({product,qty})=>{
+        total+=product.price*qty;
+        count+=qty;
+        cI.innerHTML+=`<div class='cart-row'>
+          <img src='${product.img}'><div><div>${product.name}</div>
+          <div>${fmt(product.price)} сомонӣ × ${qty}</div></div>
+          <div><button onclick='updateCart(${product.id},-1)'>−</button><span>${qty}</span><button onclick='updateCart(${product.id},1)'>+</button></div>
+        </div>`;
       });
-      document.getElementById('cartTotal').textContent  = fmt(total) + ' сомонӣ';
-      document.getElementById('cartCount').textContent  = count;
+      document.getElementById('cartTotal').textContent=fmt(total)+' сомонӣ';
+      document.getElementById('cartCount').textContent=count;
     }
 
-    function openCart(){ document.getElementById('cartPanel').classList.add('open'); document.getElementById('overlay').style.display='block'; }
-    function closeCart(){ document.getElementById('cartPanel').classList.remove('open'); document.getElementById('overlay').style.display='none'; }
+    function openCart(){document.getElementById('cartPanel').classList.add('open');document.getElementById('overlay').style.display='block';}
+    function closeCart(){document.getElementById('cartPanel').classList.remove('open');document.getElementById('overlay').style.display='none';}
 
-    /* === 6) ОТПРАВКА ЗАКАЗА === */
-    async function sendOrder(){
-      if(state.cart.size===0){ alert('Сабад холӣ аст'); return; }
-      const items = Array.from(state.cart.values()).map(({product,qty}) => ({
-        id: product.id, name: product.name, price: +product.price||0, qty, subtotal: (+product.price||0)*qty
-      }));
-      const total = items.reduce((s,i)=>s+i.subtotal,0);
-      const order = {
-        action:'order',
-        items, total, currency:'сомонӣ',
-        customer:{
-          name:   prompt('Номи худро ворид кунед:')      || '',
-          phone:  prompt('Рақами телефони худро ворид кунед:') || '',
-          address:prompt('Суроғаи худро ворид кунед:')   || ''
-        }
-      };
-      try{
-        // no-cors: чтобы не падать на CORS, ответ всё равно не прочитаем — достаточно факта отправки
-        await fetch(SCRIPT_URL, { method:'POST', mode:'no-cors', body: JSON.stringify(order) });
-        alert('✅ Фармоиш фиристода шуд!');
-        state.cart.clear(); renderCart(); closeCart();
-      }catch(e){
-        alert('❌ Хато ҳангоми фиристодани фармоиш: ' + e.message);
-      }
-    }
-
-    /* === 7) ЗАГРУЗКА ИЗ GOOGLE SHEETS === */
-    async function loadProducts(){
-      try{
-        const res  = await fetch(SHEET_URL);
-        const txt  = await res.text();
-        // ответ gviz начинается с "/*O_o*/\ngoogle.visualization.Query.setResponse("
-        const json = JSON.parse(txt.substring(47).slice(0,-2));
-        const rows = json.table.rows || [];
-        products = rows.map(r => {
-          const id    = r.c[0]?.v ?? '';
-          const cat   = (r.c[1]?.v ?? '').toString();
-          const name  = (r.c[2]?.v ?? '').toString();
-          const price = Number(r.c[3]?.v ?? 0);
-          const img   = (r.c[4]?.v ?? '').toString();
-          return { id, cat, name, price, img, _key: `${id}__${name}` };
-        }).filter(p => p.name);
-        renderCats(); renderGrid();
-      }catch(e){
-        console.error(e);
-        grid.innerHTML = `<p style="opacity:.8">Хато ҳангоми боркунии маълумот аз Google Sheets.</p>`;
-      }
-    }
-
-    /* === 8) СЛУШАТЕЛИ === */
     document.getElementById('openCart').addEventListener('click',openCart);
     document.getElementById('closeCart').addEventListener('click',closeCart);
     document.getElementById('overlay').addEventListener('click',closeCart);
-    document.getElementById('clear').addEventListener('click',()=>{ state.cart.clear(); renderCart(); });
-    document.getElementById('checkout').addEventListener('click',sendOrder);
-    searchEl.addEventListener('input',renderGrid);
+    document.getElementById('clear').addEventListener('click',()=>{state.cart.clear();renderCart();});
+    search.addEventListener('input',renderGrid);
 
-    /* === 9) СТАРТ === */
     loadProducts();
   </script>
 </body>
