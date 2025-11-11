@@ -4,7 +4,7 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>TradeWay TJ — Дӯкони онлайн</title>
-  <meta name="description" content="Дӯкони онлайн бо сабади фаъол ва иловаи маҳсулот танҳо барои админ">
+  <meta name="description" content="Дӯкони онлайн бо сабади фаъол ва ирсоли фармоиш ба Google Sheets">
   <style>
     :root {
       --bg:#0f172a; --surface:#111827; --muted:#94a3b8; --text:#e5e7eb;
@@ -73,7 +73,10 @@
       <h1 class="title">Категорияҳо</h1>
       <div id="categories" class="categories"></div>
     </section>
-    <section><div id="grid" class="grid"></div></section>
+
+    <section>
+      <div id="grid" class="grid"></div>
+    </section>
   </main>
 
   <div id="overlay" class="cart-overlay"></div>
@@ -91,33 +94,33 @@
   </aside>
 
   <script>
-    const ADMIN_PASS = "12345"; // 🔑 Поменяй на свой пароль
-    let isAdmin = false;
+    const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbw3wsocC-b85NvJ2S0jrW_uLR39MYSJNWy5GDgF7Je0qNvWT_9Ncnkwm0k5RkSo25vf/exec';
 
-    const state = { products: [], cart: new Map(), filter: 'Ҳама' };
+    const products = [
+      {id:1,cat:'Электроника',name:'Смартфон Samsung',price:25000,img:'https://picsum.photos/seed/phone/600/400'},
+      {id:2,cat:'Электроника',name:'Гӯшмонаки Bluetooth',price:12000,img:'https://picsum.photos/seed/headphones/600/400'},
+      {id:3,cat:'Канцелярия',name:'Дафтар',price:10,img:'https://picsum.photos/seed/notebook/600/400'},
+      {id:4,cat:'Канцелярия',name:'Қалам',price:3,img:'https://picsum.photos/seed/pen/600/400'},
+      {id:5,cat:'Либос',name:'Ҷома',price:350,img:'https://picsum.photos/seed/shirt/600/400'},
+      {id:6,cat:'Пойафзол',name:'Крассовкаҳо',price:600,img:'https://picsum.photos/seed/shoes/600/400'},
+      {id:7,cat:'Постельное белье',name:'Болишт',price:200,img:'https://picsum.photos/seed/pillow/600/400'},
+      {id:8,cat:'Постельное белье',name:'Комплект рӯйпӯш',price:500,img:'https://picsum.photos/seed/blanket/600/400'}
+    ];
+
+    const state = {cart:new Map(),filter:'Ҳама'};
     const fmt = n => n.toLocaleString('ru-RU');
 
     const grid = document.getElementById('grid');
     const catsDiv = document.getElementById('categories');
     const search = document.getElementById('search');
 
-    const defaultProducts = [
-      {id:1, cat:'Электроника', name:'Самсунг А4', price:600, img:'https://iili.io/KmrTpyX.jpg'},
-      {id:2, cat:'Либос', name:'Куртка', price:900, img:'https://iili.io/KmrYKGa.jpg'},
-      {id:3, cat:'Пойафзол', name:'Кеды', price:2500, img:'https://iili.io/KmrlFYx.jpg'}
-    ];
+    const cats = ['Ҳама','Электроника','Канцелярия','Либос','Пойафзол','Постельное белье'];
 
-    const saved = localStorage.getItem('products');
-    state.products = saved ? JSON.parse(saved) : [...defaultProducts];
-    const cats = ['Ҳама', ...new Set(state.products.map(p => p.cat))];
-
-    function renderCats() {
-      catsDiv.innerHTML = cats.map(c =>
-        `<button class='cat-btn ${state.filter===c?'active':''}' onclick='setCat("${c}")'>${c}</button>`
-      ).join('');
+    function renderCats(){
+      catsDiv.innerHTML = cats.map(c=>`<button class='cat-btn ${state.filter===c?'active':''}' onclick='setCat("${c}")'>${c}</button>`).join('');
     }
 
-    function setCat(c){ state.filter = c; renderCats(); renderGrid(); }
+    function setCat(c){ state.filter=c; renderCats(); renderGrid(); }
 
     function card(p){
       return `<article class='card'>
@@ -125,17 +128,13 @@
         <div class='body'>
           <div class='name'>${p.name}</div>
           <div class='price'>${fmt(p.price)} сомонӣ</div>
-          <div style="display:flex;gap:6px;">
-            <button class='btn' onclick='updateCart(${p.id},1)'>🛒 Сабад</button>
-            ${isAdmin ? `<button class='btn' style='background:#7f1d1d;color:white;' onclick='deleteProduct(${p.id})'>🗑️ Пок кардан</button>` : ""}
-          </div>
-        </div>
-      </article>`;
+          <button class='btn add' onclick='updateCart(${p.id},1)'>Илова ба сабад</button>
+        </div></article>`;
     }
 
     function renderGrid(){
       let q = search.value.toLowerCase();
-      let list = state.products.filter(p =>
+      let list = products.filter(p =>
         (state.filter==='Ҳама' || p.cat===state.filter) &&
         p.name.toLowerCase().includes(q)
       );
@@ -143,7 +142,7 @@
     }
 
     function updateCart(id,delta){
-      const p=state.products.find(x=>x.id===id);
+      const p=products.find(x=>x.id===id);
       if(!p)return;
       const item=state.cart.get(id)||{product:p,qty:0};
       item.qty=Math.max(0,item.qty+delta);
@@ -162,86 +161,37 @@
         cI.innerHTML+=`<div class='cart-row'>
           <img src='${product.img}'><div><div>${product.name}</div>
           <div>${fmt(product.price)} сомонӣ × ${qty}</div></div>
-          <div><button onclick='updateCart(${product.id},-1)'>−</button>
-          <span>${qty}</span><button onclick='updateCart(${product.id},1)'>+</button></div>
+          <div><button onclick='updateCart(${product.id},-1)'>−</button><span>${qty}</span><button onclick='updateCart(${product.id},1)'>+</button></div>
         </div>`;
       });
       document.getElementById('cartTotal').textContent=fmt(total)+' сомонӣ';
       document.getElementById('cartCount').textContent=count;
     }
 
-    function deleteProduct(id){
-      if(!confirm('Шумо мутмаин ҳастед, ки мехоҳед ин маҳсулотро пок кунед?'))return;
-      state.products = state.products.filter(p => p.id !== id);
-      localStorage.setItem('products', JSON.stringify(state.products));
-      renderGrid();
-      alert('❌ Маҳсулот пок карда шуд');
-    }
-
     function openCart(){document.getElementById('cartPanel').classList.add('open');document.getElementById('overlay').style.display='block';}
     function closeCart(){document.getElementById('cartPanel').classList.remove('open');document.getElementById('overlay').style.display='none';}
+
+    async function sendOrder(cart){
+      try{
+        const items=Array.from(cart.values()).map(({product,qty})=>({id:product.id,name:product.name,price:product.price,qty,subtotal:product.price*qty}));
+        const total=items.reduce((s,i)=>s+i.subtotal,0);
+        const order={action:'order',items,total,currency:'сомони',
+          customer:{name:prompt('Номи худро ворид кунед:')||'',phone:prompt('Рақами телефони худро ворид кунед:')||'',address:prompt('Суроғаи худро ворид кунед:')||''}};
+        await fetch(SCRIPT_URL,{method:'POST',mode:'no-cors',body:JSON.stringify(order)});
+        alert('✅ Фармоиш фиристода шуд!');
+        state.cart.clear();renderCart();
+      }catch(err){alert('❌ Хато: '+err.message);}
+    }
 
     document.getElementById('openCart').addEventListener('click',openCart);
     document.getElementById('closeCart').addEventListener('click',closeCart);
     document.getElementById('overlay').addEventListener('click',closeCart);
+    document.getElementById('checkout').addEventListener('click',()=>{if(state.cart.size===0){alert('Сабад холӣ аст');return;}sendOrder(state.cart);});
     document.getElementById('clear').addEventListener('click',()=>{state.cart.clear();renderCart();});
     search.addEventListener('input',renderGrid);
 
-    renderCats(); renderGrid();
-
-    // --- Добавление товара (только админ) ---
-    function addButtonIfAdmin(){
-      if(!isAdmin)return;
-      const addBtn = document.createElement('button');
-      addBtn.className='btn primary';
-      addBtn.textContent='➕ Иловаи маҳсулот';
-      addBtn.style.margin='20px auto';
-      addBtn.onclick = ()=>openAddForm();
-      document.querySelector('main').appendChild(addBtn);
-    }
-
-    function openAddForm(){
-      const form = document.createElement('div');
-      form.innerHTML = `
-        <div style="background:#0b1325;padding:20px;border-radius:12px;max-width:350px;margin:20px auto;border:1px solid #1f2937">
-          <h3>➕ Маҳсулоти нав</h3><br>
-          <input id="newCat" placeholder="Категория" class="input" style="width:100%;margin-bottom:8px">
-          <input id="newName" placeholder="Ном" class="input" style="width:100%;margin-bottom:8px">
-          <input id="newPrice" placeholder="Нарх" type="number" class="input" style="width:100%;margin-bottom:8px">
-          <input id="newImg" placeholder="Ссылка ба расм" class="input" style="width:100%;margin-bottom:8px">
-          <button class="btn primary" id="saveProduct" style="width:100%">💾 Сохранить</button>
-        </div>`;
-      document.body.appendChild(form);
-      document.getElementById('saveProduct').onclick = ()=>{
-        const cat=document.getElementById('newCat').value;
-        const name=document.getElementById('newName').value;
-        const price=parseFloat(document.getElementById('newPrice').value);
-        const img=document.getElementById('newImg').value;
-        if(!cat||!name||!price||!img){alert('Лутфан ҳамаи майдонҳоро пур кунед!');return;}
-        const newProd={id:Date.now(),cat,name,price,img};
-        state.products.push(newProd);
-        localStorage.setItem('products', JSON.stringify(state.products));
-        if(!cats.includes(cat))cats.push(cat);
-        renderCats(); renderGrid();
-        form.remove();
-        alert('✅ Маҳсулот илова шуд ва нигоҳ дошта шуд!');
-      }
-    }
-
-    // 🔐 Запрос пароля при входе
-    window.onload = ()=>{
-      const pass = prompt("Пароли админро ворид кунед (ё холӣ гузоред):");
-      if(pass === ADMIN_PASS){
-        isAdmin = true;
-        alert("🔥 Шумо ҳамчун админ даромадед!");
-      } else {
-        isAdmin = false;
-        alert("👤 Реҷаи муштарӣ фаъол аст");
-      }
-      renderCats();
-      renderGrid();
-      addButtonIfAdmin();
-    };
+    renderCats();
+    renderGrid();
   </script>
 </body>
 </html>
