@@ -93,8 +93,8 @@
   </aside>
 
   <script>
-    // 🔗 Подключаем Google Sheets
-    const SHEET_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vQpIR_sMPcVIkHY9EqBhyLYwEz-AqhNV64SCrT_nRiukBFFpmzU13uASf5YeUbnBShga4gowbGxxndo/gviz/tq?tqx=out:json&sheet=products';
+    // ✅ ССЫЛКА НА ТВОЮ ТАБЛИЦУ GOOGLE SHEETS
+    const SHEET_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vQpIR_sMPcVIkHY9EqBhyLYwEz-AqhNV64SCrT_nRiukBFFpmzU13uASf5YeUbnBShga4gowbGxxndO/gviz/tq?tqx=out:json&sheet=products';
 
     const state = {cart:new Map(),filter:'Ҳама',products:[]};
     const fmt = n => n.toLocaleString('ru-RU');
@@ -104,7 +104,7 @@
         const res = await fetch(SHEET_URL);
         const text = await res.text();
         const json = JSON.parse(text.substr(47).slice(0,-2));
-        const rows = json.table.rows.map(r=>r.c.map(c=>c?v=c.v:''));
+        const rows = json.table.rows.map(r=>r.c.map(c=>c?c.v:''));
         const headers = json.table.cols.map(c=>c.label.toLowerCase());
         state.products = rows.map(r=>{
           const p={};
@@ -114,7 +114,7 @@
         renderCats();
         renderGrid();
       } catch(err){
-        document.getElementById('grid').innerHTML = `<p style="color:red">Хато ҳангоми боркунии маълумот аз Google Sheets 😕<br>${err.message}</p>`;
+        document.getElementById('grid').innerHTML = `<p style="color:red">❌ Хато ҳангоми боркунии маълумот аз Google Sheets:<br>${err.message}</p>`;
       }
     }
 
@@ -184,7 +184,9 @@
     document.getElementById('clear').addEventListener('click',()=>{state.cart.clear();renderCart();});
     search.addEventListener('input',renderGrid);
 
+    // 🔄 Автоматическое обновление каждые 30 секунд
     loadProducts();
+    setInterval(loadProducts, 30000);
   </script>
 </body>
 </html>
