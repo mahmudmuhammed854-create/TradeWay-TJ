@@ -47,6 +47,7 @@
     .name{font-weight:600;font-size:15px}
     .price{font-weight:700;font-size:16px;color:#bbf7d0}
 
+    /* Cart */
     .cart-overlay{position:fixed;inset:0;background:rgba(0,0,0,.45);backdrop-filter:blur(2px);display:none;z-index:60}
     .cart{position:fixed;right:0;top:0;height:100vh;width:350px;max-width:100%;background:#0b1325;border-left:1px solid var(--border);box-shadow:-10px 0 30px rgba(0,0,0,.3);transform:translateX(105%);transition:transform .25s ease;z-index:61;display:flex;flex-direction:column}
     .cart.open{transform:translateX(0)}
@@ -93,38 +94,30 @@
   </aside>
 
   <script>
-    // ✅ ССЫЛКА НА ТВОЮ ТАБЛИЦУ GOOGLE SHEETS
-    const SHEET_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vQpIR_sMPcVIkHY9EqBhyLYwEz-AqhNV64SCrT_nRiukBFFpmzU13uASf5YeUbnBShga4gowbGxxndO/gviz/tq?tqx=out:json&sheet=products';
+    const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbw3wsocC-b85NvJ2S0jrW_uLR39MYSJNWy5GDgF7Je0qNvWT_9Ncnkwm0k5RkSo25vf/exec';
 
-    const state = {cart:new Map(),filter:'Ҳама',products:[]};
+    const products = [
+      {id:1,cat:'Электроника',name:'Смартфон Samsung',price:25000,img:'https://picsum.photos/seed/phone/600/400'},
+      {id:2,cat:'Электроника',name:'Гӯшмонаки Bluetooth',price:12000,img:'https://picsum.photos/seed/headphones/600/400'},
+      {id:3,cat:'Канцелярия',name:'Дафтар',price:10,img:'https://picsum.photos/seed/notebook/600/400'},
+      {id:4,cat:'Канцелярия',name:'Қалам',price:3,img:'https://picsum.photos/seed/pen/600/400'},
+      {id:5,cat:'Либос',name:'Ҷома',price:350,img:'https://picsum.photos/seed/shirt/600/400'},
+      {id:6,cat:'Пойафзол',name:'Крассовкаҳо',price:600,img:'https://picsum.photos/seed/shoes/600/400'},
+      {id:7,cat:'Постельное белье',name:'Болишт',price:200,img:'https://picsum.photos/seed/pillow/600/400'},
+      {id:8,cat:'Постельное белье',name:'Комплект рӯйпӯш',price:500,img:'https://picsum.photos/seed/blanket/600/400'}
+    ];
+
+    const state = {cart:new Map(),filter:'Ҳама'};
     const fmt = n => n.toLocaleString('ru-RU');
 
-    async function loadProducts(){
-      try {
-        const res = await fetch(SHEET_URL);
-        const text = await res.text();
-        const json = JSON.parse(text.substr(47).slice(0,-2));
-        const rows = json.table.rows.map(r=>r.c.map(c=>c?c.v:''));
-        const headers = json.table.cols.map(c=>c.label.toLowerCase());
-        state.products = rows.map(r=>{
-          const p={};
-          headers.forEach((h,i)=>p[h]=r[i]);
-          return {id:+p.id,cat:p.cat,name:p.name,price:+p.price,img:p.img};
-        });
-        renderCats();
-        renderGrid();
-      } catch(err){
-        document.getElementById('grid').innerHTML = `<p style="color:red">❌ Хато ҳангоми боркунии маълумот аз Google Sheets:<br>${err.message}</p>`;
-      }
-    }
+    const grid = document.getElementById('grid');
+    const catsDiv = document.getElementById('categories');
+    const search = document.getElementById('search');
 
-    const grid=document.getElementById('grid');
-    const catsDiv=document.getElementById('categories');
-    const search=document.getElementById('search');
+    const cats = ['Ҳама','Электроника','Канцелярия','Либос','Пойафзол','Постельное белье'];
 
     function renderCats(){
-      const cats=['Ҳама',...new Set(state.products.map(p=>p.cat))];
-      catsDiv.innerHTML=cats.map(c=>`<button class='cat-btn ${state.filter===c?'active':''}' onclick='setCat("${c}")'>${c}</button>`).join('');
+      catsDiv.innerHTML = cats.map(c=>`<button class='cat-btn ${state.filter===c?'active':''}' onclick='setCat("${c}")'>${c}</button>`).join('');
     }
 
     function setCat(c){ state.filter=c; renderCats(); renderGrid(); }
@@ -141,7 +134,7 @@
 
     function renderGrid(){
       let q = search.value.toLowerCase();
-      let list = state.products.filter(p =>
+      let list = products.filter(p =>
         (state.filter==='Ҳама' || p.cat===state.filter) &&
         p.name.toLowerCase().includes(q)
       );
@@ -149,7 +142,7 @@
     }
 
     function updateCart(id,delta){
-      const p=state.products.find(x=>x.id===id);
+      const p=products.find(x=>x.id===id);
       if(!p)return;
       const item=state.cart.get(id)||{product:p,qty:0};
       item.qty=Math.max(0,item.qty+delta);
@@ -178,15 +171,27 @@
     function openCart(){document.getElementById('cartPanel').classList.add('open');document.getElementById('overlay').style.display='block';}
     function closeCart(){document.getElementById('cartPanel').classList.remove('open');document.getElementById('overlay').style.display='none';}
 
+    async function sendOrder(cart){
+      try{
+        const items=Array.from(cart.values()).map(({product,qty})=>({id:product.id,name:product.name,price:product.price,qty,subtotal:product.price*qty}));
+        const total=items.reduce((s,i)=>s+i.subtotal,0);
+        const order={action:'order',items,total,currency:'сомони',
+          customer:{name:prompt('Номи худро ворид кунед:')||'',phone:prompt('Рақами телефони худро ворид кунед:')||'',address:prompt('Суроғаи худро ворид кунед:')||''}};
+        await fetch(SCRIPT_URL,{method:'POST',mode:'no-cors',body:JSON.stringify(order)});
+        alert('✅ Фармоиш фиристода шуд!');
+        state.cart.clear();renderCart();
+      }catch(err){alert('❌ Хато: '+err.message);}
+    }
+
     document.getElementById('openCart').addEventListener('click',openCart);
     document.getElementById('closeCart').addEventListener('click',closeCart);
     document.getElementById('overlay').addEventListener('click',closeCart);
+    document.getElementById('checkout').addEventListener('click',()=>{if(state.cart.size===0){alert('Сабад холӣ аст');return;}sendOrder(state.cart);});
     document.getElementById('clear').addEventListener('click',()=>{state.cart.clear();renderCart();});
     search.addEventListener('input',renderGrid);
 
-    // 🔄 Автоматическое обновление каждые 30 секунд
-    loadProducts();
-    setInterval(loadProducts, 30000);
+    renderCats();
+    renderGrid();
   </script>
 </body>
 </html>
