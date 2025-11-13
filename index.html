@@ -502,22 +502,6 @@
       color: #e5e7eb;
     }
 
-    .nav-item.badge::after {
-      content: attr(data-count);
-      display: inline-flex;
-      margin-left: 2px;
-      align-items: center;
-      justify-content: center;
-      min-width: 15px;
-      height: 15px;
-      border-radius: 999px;
-      background: #f97316;
-      color: #02131b;
-      font-size: 10px;
-      font-weight: 700;
-      padding: 0 4px;
-    }
-
     .nav-cart-btn {
       position: relative;
       transform: translateY(-6px);
@@ -761,6 +745,211 @@
         border-inline: 1px solid rgba(31,41,55,1);
       }
     }
+
+    /* ---------- SIDE MENU ---------- */
+
+    .side-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(15,23,42,.7);
+      backdrop-filter: blur(3px);
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity .2s ease;
+      z-index: 40;
+    }
+    .side-overlay.visible {
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    .side-menu {
+      position: fixed;
+      top: 0;
+      left: 0;
+      height: 100vh;
+      width: 260px;
+      max-width: 80%;
+      background: #020617;
+      border-right: 1px solid var(--border);
+      box-shadow: 10px 0 30px rgba(0,0,0,.7);
+      transform: translateX(-100%);
+      transition: transform .2s ease;
+      z-index: 41;
+      display: flex;
+      flex-direction: column;
+      padding: 16px 14px;
+      gap: 10px;
+    }
+    .side-menu.open {
+      transform: translateX(0);
+    }
+    .side-menu-header {
+      margin-bottom: 10px;
+    }
+    .side-menu-header h2 {
+      font-size: 16px;
+      margin-bottom: 4px;
+    }
+    .side-menu-header small {
+      font-size: 11px;
+      color: var(--muted);
+    }
+    .side-menu-item {
+      padding: 10px 6px;
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      cursor: pointer;
+      font-size: 14px;
+      color: #e5e7eb;
+    }
+    .side-menu-item:hover {
+      background: rgba(15,23,42,.9);
+    }
+    .side-menu-item span.icon {
+      width: 22px;
+      text-align: center;
+    }
+
+    /* ---------- PANELS (PROFILE / ORDERS / FAVS) ---------- */
+
+    .panel {
+      position: fixed;
+      inset: 0;
+      max-width: 480px;
+      margin: 0 auto;
+      background: radial-gradient(circle at top, #020617, #020617 60%, #000);
+      z-index: 50;
+      display: none;
+      flex-direction: column;
+    }
+    .panel.open {
+      display: flex;
+    }
+    .panel-header {
+      padding: 12px 16px 8px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      border-bottom: 1px solid rgba(31,41,55,.9);
+    }
+    .panel-header h2 {
+      font-size: 16px;
+    }
+    .panel-close {
+      border-radius: 999px;
+      width: 30px;
+      height: 30px;
+      border: 1px solid rgba(51,65,85,.9);
+      background: rgba(15,23,42,.9);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      font-size: 16px;
+    }
+    .panel-body {
+      padding: 10px 16px 16px;
+      overflow-y: auto;
+      flex: 1;
+      font-size: 14px;
+    }
+    .form-group {
+      margin-bottom: 12px;
+    }
+    .form-group label {
+      display: block;
+      margin-bottom: 4px;
+      font-size: 12px;
+      color: var(--muted);
+    }
+    .form-group input,
+    .form-group textarea {
+      width: 100%;
+      border-radius: 10px;
+      border: 1px solid rgba(51,65,85,.9);
+      background: #020617;
+      color: var(--text);
+      padding: 8px 10px;
+      font-size: 14px;
+      outline: none;
+    }
+    .form-group textarea {
+      min-height: 60px;
+      resize: vertical;
+    }
+    .panel-footer {
+      padding: 10px 16px 14px;
+      border-top: 1px solid rgba(31,41,55,.9);
+      display: flex;
+      gap: 8px;
+    }
+    .panel-btn {
+      flex: 1;
+      border-radius: 999px;
+      border: 1px solid rgba(55,65,81,.9);
+      background: rgba(15,23,42,1);
+      color: var(--text);
+      padding: 9px 10px;
+      font-size: 13px;
+      font-weight: 500;
+      cursor: pointer;
+      text-align: center;
+    }
+    .panel-btn.primary {
+      border: none;
+      background: linear-gradient(135deg, #22c55e, #16a34a);
+      color: #022c22;
+      font-weight: 700;
+      box-shadow: 0 12px 32px rgba(34,197,94,.6);
+    }
+    .order-card {
+      border-radius: 14px;
+      border: 1px solid rgba(31,41,55,1);
+      background: radial-gradient(circle at top, #020617, #020617 60%);
+      padding: 10px 10px 8px;
+      margin-bottom: 10px;
+      font-size: 13px;
+    }
+    .order-card-header {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 4px;
+    }
+    .order-card-items {
+      color: var(--muted);
+      font-size: 12px;
+      margin-top: 4px;
+    }
+    .fav-list {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 8px;
+    }
+    .fav-item {
+      display: flex;
+      gap: 8px;
+      border-radius: 12px;
+      border: 1px solid rgba(31,41,55,1);
+      background: #020617;
+      padding: 8px;
+    }
+    .fav-item img {
+      width: 64px;
+      height: 64px;
+      border-radius: 10px;
+      object-fit: cover;
+    }
+    .fav-item h3 {
+      font-size: 13px;
+      margin-bottom: 2px;
+    }
+    .fav-item small {
+      font-size: 11px;
+      color: var(--muted);
+    }
   </style>
 </head>
 <body>
@@ -856,6 +1045,90 @@
   </div>
 </div>
 
+<!-- SIDE MENU -->
+<div class="side-overlay" id="sideOverlay"></div>
+<aside class="side-menu" id="sideMenu">
+  <div class="side-menu-header">
+    <h2>Меню</h2>
+    <small>Управление аккаунтом</small>
+  </div>
+  <div class="side-menu-item" data-action="profile">
+    <span class="icon">👤</span> Мой профиль
+  </div>
+  <div class="side-menu-item" data-action="favorites">
+    <span class="icon">❤</span> Избранное
+  </div>
+  <div class="side-menu-item" data-action="orders">
+    <span class="icon">📦</span> Мои заказы
+  </div>
+  <div class="side-menu-item" data-action="support">
+    <span class="icon">💬</span> Поддержка
+  </div>
+  <div class="side-menu-item" data-action="profile">
+    <span class="icon">⚙</span> Мои данные
+  </div>
+  <div class="side-menu-item" data-action="logout">
+    <span class="icon">🚪</span> Выход
+  </div>
+</aside>
+
+<!-- PANEL: PROFILE -->
+<div class="panel" id="profilePanel">
+  <div class="panel-header">
+    <button class="panel-close" type="button" data-close="profilePanel">←</button>
+    <h2>Мой профиль</h2>
+  </div>
+  <div class="panel-body">
+    <div class="form-group">
+      <label for="profileName">Имя</label>
+      <input id="profileName" type="text" placeholder="Введите ваше имя">
+    </div>
+    <div class="form-group">
+      <label for="profilePhone">Телефон</label>
+      <input id="profilePhone" type="tel" placeholder="+992 ...">
+    </div>
+    <div class="form-group">
+      <label for="profileAddress">Адрес доставки</label>
+      <textarea id="profileAddress" placeholder="Город, улица, дом..."></textarea>
+    </div>
+    <p style="font-size:12px;color:var(--muted);margin-top:4px;">
+      Эти данные будут автоматически подставляться при оформлении заказа.
+    </p>
+  </div>
+  <div class="panel-footer">
+    <button class="panel-btn" type="button" data-close="profilePanel">Отмена</button>
+    <button class="panel-btn primary" type="button" id="saveProfileBtn">Сохранить</button>
+  </div>
+</div>
+
+<!-- PANEL: ORDERS -->
+<div class="panel" id="ordersPanel">
+  <div class="panel-header">
+    <button class="panel-close" type="button" data-close="ordersPanel">←</button>
+    <h2>Мои заказы</h2>
+  </div>
+  <div class="panel-body" id="ordersList">
+    <!-- генерируется скриптом -->
+  </div>
+  <div class="panel-footer">
+    <button class="panel-btn" type="button" data-close="ordersPanel">Закрыть</button>
+  </div>
+</div>
+
+<!-- PANEL: FAVORITES -->
+<div class="panel" id="favoritesPanel">
+  <div class="panel-header">
+    <button class="panel-close" type="button" data-close="favoritesPanel">←</button>
+    <h2>Избранное</h2>
+  </div>
+  <div class="panel-body">
+    <div id="favoritesList" class="fav-list"></div>
+  </div>
+  <div class="panel-footer">
+    <button class="panel-btn" type="button" data-close="favoritesPanel">Закрыть</button>
+  </div>
+</div>
+
 <!-- BOTTOM NAV -->
 <nav class="bottom-nav">
   <div class="bottom-nav-inner">
@@ -881,12 +1154,13 @@
 
 <script>
   // ====== НАСТРОЙКИ ======
-  // ТВОЙ Apps Script Web App URL (УЖЕ ТВOЙ):
-  const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbyxXp29sTf0mra7A69e_ykJjoXzM5mv_zMtZ24cJlyHh_FVJrNMe8paSkBd-Mmb75-t/exec';
+  const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbw3wsocC-b85NvJ2S0jrW_uLR39MYSJNWy5GDgF7Je0qNvWT_9Ncnkwm0k5RkSo25vf/exec';
 
-  // ====== ТОВАРЫ (РЕДАКТИРУЕШЬ ТОЛЬКО ЭТО) ======
-  // category: категория, name: название, subtitle: цвет/описание,
-  // price: цена, oldPrice: старая цена (опционально), sizes: строка, image: ссылка на фото
+  const STORAGE_PROFILE_KEY = 'tw_profile';
+  const STORAGE_ORDERS_KEY = 'tw_orders';
+  const STORAGE_FAV_KEY = 'tw_fav_ids';
+
+  // ====== ТОВАРЫ ======
   const PRODUCTS = [
     {
       id: 'tshirt_white',
@@ -983,8 +1257,66 @@
   const favFilterBtn = document.getElementById('favFilterBtn');
   const navFav = document.getElementById('navFav');
   const navHome = document.getElementById('navHome');
+  const navOrders = document.getElementById('navOrders');
+  const navProfile = document.getElementById('navProfile');
+  const profileBtn = document.getElementById('profileBtn');
 
-  // ====== ОТРИСОВКА КАТЕГОРИЙ ======
+  const burgerBtn = document.querySelector('.burger');
+  const sideOverlay = document.getElementById('sideOverlay');
+  const sideMenu = document.getElementById('sideMenu');
+
+  const profilePanel = document.getElementById('profilePanel');
+  const ordersPanel = document.getElementById('ordersPanel');
+  const favoritesPanel = document.getElementById('favoritesPanel');
+
+  const profileNameInput = document.getElementById('profileName');
+  const profilePhoneInput = document.getElementById('profilePhone');
+  const profileAddressInput = document.getElementById('profileAddress');
+  const saveProfileBtn = document.getElementById('saveProfileBtn');
+  const ordersListEl = document.getElementById('ordersList');
+  const favoritesListEl = document.getElementById('favoritesList');
+
+  // ====== LOCALSTORAGE HELPERS ======
+  function loadProfile() {
+    try {
+      const raw = localStorage.getItem(STORAGE_PROFILE_KEY);
+      return raw ? JSON.parse(raw) : { name: '', phone: '', address: '' };
+    } catch {
+      return { name: '', phone: '', address: '' };
+    }
+  }
+
+  function saveProfile(profile) {
+    localStorage.setItem(STORAGE_PROFILE_KEY, JSON.stringify(profile));
+  }
+
+  function loadOrders() {
+    try {
+      const raw = localStorage.getItem(STORAGE_ORDERS_KEY);
+      return raw ? JSON.parse(raw) : [];
+    } catch {
+      return [];
+    }
+  }
+
+  function saveOrders(orders) {
+    localStorage.setItem(STORAGE_ORDERS_KEY, JSON.stringify(orders));
+  }
+
+  function loadFavoritesFromStorage() {
+    try {
+      const raw = localStorage.getItem(STORAGE_FAV_KEY);
+      if (!raw) return;
+      const arr = JSON.parse(raw);
+      state.favorites = new Set(arr);
+    } catch {}
+  }
+
+  function saveFavoritesToStorage() {
+    localStorage.setItem(STORAGE_FAV_KEY, JSON.stringify([...state.favorites]));
+  }
+
+  // ====== КАТЕГОРИИ ======
   function getAllCategories() {
     const set = new Set(PRODUCTS.map(p => p.category));
     return ['Все', ...set];
@@ -1000,7 +1332,7 @@
     }).join('');
   }
 
-  // ====== ФИЛЬТР ТОВАРОВ ======
+  // ====== ФИЛЬТР / ТОВАРЫ ======
   function getFilteredProducts() {
     const q = state.search.trim().toLowerCase();
     return PRODUCTS.filter(p => {
@@ -1012,7 +1344,6 @@
     });
   }
 
-  // ====== ОТРИСОВКА ТОВАРОВ ======
   function renderProducts() {
     const list = getFilteredProducts();
     resultsLabel.textContent = list.length ? `${list.length} товаров` : 'Ничего не найдено';
@@ -1046,7 +1377,29 @@
   function toggleFavorite(id) {
     if (state.favorites.has(id)) state.favorites.delete(id);
     else state.favorites.add(id);
+    saveFavoritesToStorage();
     renderProducts();
+    renderFavoritesPanel();
+  }
+
+  function renderFavoritesPanel() {
+    const favIds = [...state.favorites];
+    if (!favIds.length) {
+      favoritesListEl.innerHTML = `<p style="font-size:13px;color:var(--muted);">Пока нет избранных товаров.</p>`;
+      return;
+    }
+    const list = PRODUCTS.filter(p => state.favorites.has(p.id));
+    favoritesListEl.innerHTML = list.map(p => `
+      <div class="fav-item">
+        <img src="${p.image}" alt="${p.name}">
+        <div style="flex:1;">
+          <h3>${p.name}</h3>
+          <small>${p.subtitle}</small><br>
+          <strong>${formatPrice(p.price)}</strong>
+        </div>
+        <button style="all:unset;font-size:12px;color:#f97316;cursor:pointer;" onclick="addToCart('${p.id}',1)">В корзину</button>
+      </div>
+    `).join('');
   }
 
   // ====== КОРЗИНА ======
@@ -1116,6 +1469,28 @@
     cartInfoLine.textContent = total ? 'Оплата при получении' : 'Без доставки';
   }
 
+  // ====== ЗАКАЗЫ ======
+  function renderOrdersPanel() {
+    const orders = loadOrders();
+    if (!orders.length) {
+      ordersListEl.innerHTML = `<p style="font-size:13px;color:var(--muted);">Вы ещё не оформляли заказы.</p>`;
+      return;
+    }
+    ordersListEl.innerHTML = orders.slice().reverse().map((o, idx) => {
+      const itemsText = o.items.map(i => `${i.name} × ${i.qty}`).join(', ');
+      return `
+        <div class="order-card">
+          <div class="order-card-header">
+            <div>Заказ #${o.id || (orders.length - idx)}</div>
+            <div><strong>${formatPrice(o.total)}</strong></div>
+          </div>
+          <div style="font-size:11px;color:var(--muted);">${o.createdAt}</div>
+          <div class="order-card-items">${itemsText}</div>
+        </div>
+      `;
+    }).join('');
+  }
+
   // ====== ОФОРМЛЕНИЕ ЗАКАЗА ======
   async function checkout() {
     const { total, count, items } = getCartSummary();
@@ -1124,12 +1499,20 @@
       return;
     }
 
-    const name = prompt('Введите ваше имя:');
-    if (!name) return;
-    const phone = prompt('Введите номер телефона:');
-    if (!phone) return;
-    const address = prompt('Введите адрес доставки:');
-    if (!address) return;
+    // Берём профиль
+    let profile = loadProfile();
+    if (!profile.name || !profile.phone || !profile.address) {
+      // если нет сохранённых данных — спросим 1 раз
+      const name = prompt('Введите ваше имя:') || '';
+      const phone = prompt('Введите номер телефона:') || '';
+      const address = prompt('Введите адрес доставки:') || '';
+      if (!name || !phone || !address) {
+        alert('Для оформления заказа нужно заполнить все данные.');
+        return;
+      }
+      profile = { name, phone, address };
+      saveProfile(profile);
+    }
 
     const payload = {
       action: 'order',
@@ -1142,16 +1525,31 @@
         qty,
         subtotal
       })),
-      customer: { name, phone, address }
+      customer: profile
     };
 
     try {
-      // no-cors — чтобы не было CORS-ошибки, ответ мы не читаем
       await fetch(SCRIPT_URL, {
         method: 'POST',
         mode: 'no-cors',
         body: JSON.stringify(payload)
       });
+
+      // сохраним заказ в localStorage
+      const orders = loadOrders();
+      orders.push({
+        id: Date.now(),
+        createdAt: new Date().toLocaleString('ru-RU'),
+        total,
+        count,
+        items: items.map(({ product, qty, subtotal }) => ({
+          id: product.id,
+          name: product.name,
+          qty,
+          subtotal
+        }))
+      });
+      saveOrders(orders);
 
       alert('✅ Заказ отправлен!\nМы свяжемся с вами для подтверждения.');
       clearCart();
@@ -1161,7 +1559,7 @@
     }
   }
 
-  // ====== ОТКРЫТИЕ/ЗАКРЫТИЕ КОРЗИНЫ ======
+  // ====== КОРЗИНА ОТКРЫТЬ/ЗАКРЫТЬ ======
   function openCart() {
     overlay.classList.add('visible');
     cartSheet.classList.add('open');
@@ -1170,6 +1568,43 @@
   function closeCart() {
     overlay.classList.remove('visible');
     cartSheet.classList.remove('open');
+  }
+
+  // ====== SIDE MENU ======
+  function openSideMenu() {
+    sideOverlay.classList.add('visible');
+    sideMenu.classList.add('open');
+  }
+  function closeSideMenu() {
+    sideOverlay.classList.remove('visible');
+    sideMenu.classList.remove('open');
+  }
+
+  // ====== PANELS ======
+  function openPanel(panel) {
+    panel.classList.add('open');
+  }
+  function closePanel(panel) {
+    panel.classList.remove('open');
+  }
+  function closeAllPanels() {
+    [profilePanel, ordersPanel, favoritesPanel].forEach(p => p.classList.remove('open'));
+  }
+
+  function openProfilePanel() {
+    const profile = loadProfile();
+    profileNameInput.value = profile.name || '';
+    profilePhoneInput.value = profile.phone || '';
+    profileAddressInput.value = profile.address || '';
+    openPanel(profilePanel);
+  }
+  function openOrdersPanel() {
+    renderOrdersPanel();
+    openPanel(ordersPanel);
+  }
+  function openFavoritesPanel() {
+    renderFavoritesPanel();
+    openPanel(favoritesPanel);
   }
 
   // ====== ОБРАБОТЧИКИ ======
@@ -1235,30 +1670,107 @@
     renderProducts();
   });
 
+  // bottom nav
   navFav.addEventListener('click', () => {
-    state.favOnly = !state.favOnly;
-    favFilterBtn.style.color = state.favOnly ? '#f97316' : '';
-    navFav.classList.toggle('active', state.favOnly);
-    navHome.classList.toggle('active', !state.favOnly);
-    renderProducts();
+    navFav.classList.add('active');
+    navHome.classList.remove('active');
+    navOrders.classList.remove('active');
+    navProfile.classList.remove('active');
+    openFavoritesPanel();
   });
 
   navHome.addEventListener('click', () => {
-    state.favOnly = false;
-    favFilterBtn.style.color = '';
-    navFav.classList.remove('active');
+    closeAllPanels();
     navHome.classList.add('active');
-    renderProducts();
+    navFav.classList.remove('active');
+    navOrders.classList.remove('active');
+    navProfile.classList.remove('active');
   });
 
-  // ====== СТАРТ ======
+  navOrders.addEventListener('click', () => {
+    navOrders.classList.add('active');
+    navHome.classList.remove('active');
+    navFav.classList.remove('active');
+    navProfile.classList.remove('active');
+    openOrdersPanel();
+  });
+
+  navProfile.addEventListener('click', () => {
+    navProfile.classList.add('active');
+    navHome.classList.remove('active');
+    navFav.classList.remove('active');
+    navOrders.classList.remove('active');
+    openProfilePanel();
+  });
+
+  profileBtn.addEventListener('click', openProfilePanel);
+
+  // side menu
+  burgerBtn.addEventListener('click', openSideMenu);
+  sideOverlay.addEventListener('click', () => {
+    closeSideMenu();
+  });
+  sideMenu.addEventListener('click', e => {
+    const item = e.target.closest('.side-menu-item');
+    if (!item) return;
+    const action = item.dataset.action;
+    closeSideMenu();
+    if (action === 'profile') {
+      openProfilePanel();
+    } else if (action === 'orders') {
+      openOrdersPanel();
+    } else if (action === 'favorites') {
+      openFavoritesPanel();
+    } else if (action === 'support') {
+      window.location.href = 'https://t.me/tradewaytj';
+    } else if (action === 'logout') {
+      localStorage.removeItem(STORAGE_PROFILE_KEY);
+      alert('Профиль очищен.');
+    }
+  });
+
+  // panel close buttons
+  document.body.addEventListener('click', e => {
+    const btn = e.target.closest('[data-close]');
+    if (!btn) return;
+    const id = btn.dataset.close;
+    const panel = document.getElementById(id);
+    if (panel) closePanel(panel);
+  });
+
+  // ====== INIT ======
   function init() {
+    loadFavoritesFromStorage();
     renderCategories();
     renderProducts();
     renderCart();
+
+    // заполним профиль, если есть
+    const profile = loadProfile();
+    if (profile.name || profile.phone || profile.address) {
+      profileNameInput.value = profile.name || '';
+      profilePhoneInput.value = profile.phone || '';
+      profileAddressInput.value = profile.address || '';
+    }
+
+    saveProfileBtn.addEventListener('click', () => {
+      const profile = {
+        name: profileNameInput.value.trim(),
+        phone: profilePhoneInput.value.trim(),
+        address: profileAddressInput.value.trim()
+      };
+      if (!profile.name || !profile.phone || !profile.address) {
+        alert('Заполните все поля.');
+        return;
+      }
+      saveProfile(profile);
+      alert('Профиль сохранён.');
+      closePanel(profilePanel);
+    });
   }
 
   init();
 </script>
 </body>
 </html>
+
